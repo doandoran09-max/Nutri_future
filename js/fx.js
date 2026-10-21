@@ -8,6 +8,11 @@
  *   Bắc Đẩu / Nam Đẩu / Tử Vi, sao băng, sao chổi, siêu tân tinh).
  * Kiểu dáng & chuyển động nằm trong css/looks.css; file này chỉ dựng các phần tử.
  *
+ * Phản hồi khi thao tác (cũng ở file này):
+ *  - Ghi món vào nhật ký (mọi nguồn: tra cứu, camera, thủ công, kế hoạch AI): chip "+kcal" bay cong tới tổng calo / tab Nhật ký,
+ *    chạm đích thì tổng "nảy" và nổ hạt của giao diện đang dùng. Nghe sự kiện 'nf:diary' nên không phải sửa từng nơi thêm món.
+ *  - Trả lời câu đố: đúng → nổ hạt + "+điểm" + combo; sai → rung, viền đỏ chớp, đáp án đúng sáng lên; xong 5/5 → pháo hoa.
+ *
  * An toàn:
  *  - Mọi phần tử tạo ra đều pointer-events:none, aria-hidden, chỉ animate transform/opacity (xem css/looks.css).
  *  - "Reduce motion": vẫn dựng cảnh nền TĨNH (đẹp, không chuyển động), không tạo hạt/sao băng.
@@ -26,6 +31,8 @@ const NF_Fx = (() => {
   let rebuildTimer = 0;
   let activeBursts = 0;
   let lookTimer = 0;
+  let lastPtr = { x: 0, y: 0, t: 0 };
+  let flightEnd = 0;
   const counting = new WeakSet();
 
   const rand = (a, b) => a + Math.random() * (b - a);
@@ -250,6 +257,7 @@ const NF_Fx = (() => {
 
   function onPointerDown(e) {
     try {
+      lastPtr = { x: e.clientX, y: e.clientY, t: Date.now() };   // để chip "+kcal" bay ra từ đúng nút vừa bấm
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       const t = e.target && e.target.closest ? e.target.closest(BURST_TARGETS) : null;
       if (!t || t.disabled) return;
@@ -324,6 +332,194 @@ const NF_Fx = (() => {
     } catch (e) { /* bỏ qua */ }
   }
 
+  /* ─── Phản hồi khi thao tác: chip bay · nảy · câu đố ─── */
+
+  const center = (el) => {
+    if (!el || !el.getBoundingClientRect) return null;
+    const r = el.getBoundingClientRect();
+    return (r.width || r.height) ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null;
+  };
+
+  /** Nảy nhẹ một phần tử (số tổng, icon tab…) */
+  function pop(el) {
+    try {
+      if (!el || reduced()) return;
+      el.classList.remove('nf-pop');
+      void el.offsetWidth;
+      el.classList.add('nf-pop');
+      setTimeout(() => el.classList.remove('nf-pop'), 720);
+    } catch (e) { /* bỏ qua */ }
+  }
+
+  /** Chip nổi lên rồi mờ (vd "+10 điểm") tại toạ độ màn hình */
+  function floatText(text, x, y, cls) {
+    try {
+      if (reduced()) return;
+      const el = document.createElement('div');
+      el.className = 'nf-chip nf-float ' + (cls || '');
+      el.textContent = text;
+      el.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(el);
+      const a = el.animate([
+        { transform: `translate(${x}px, ${y}px) translate(-50%, -50%) scale(0.6)`, opacity: 0 },
+        { transform: `translate(${x}px, ${y - 18}px) translate(-50%, -50%) scale(1.12)`, opacity: 1, offset: 0.22 },
+        { transform: `translate(${x}px, ${y - 62}px) translate(-50%, -50%) scale(1)`, opacity: 1, offset: 0.7 },
+        { transform: `translate(${x}px, ${y - 92}px) translate(-50%, -50%) scale(0.95)`, opacity: 0 },
+      ], { duration: 1150, easing: 'cubic-bezier(0.2, 0.7, 0.3, 1)', fill: 'forwards' });
+      a.onfinish = () => el.remove();
+      setTimeout(() => el.remove(), 1500);
+    } catch (e) { /* bỏ qua */ }
+  }
+
+  /** Đích cho chip "+kcal": tổng calo trên trang Nhật ký, nếu không có thì icon tab Nhật ký */
+  function findEntryTarget() {
+    const total = document.getElementById('diary-total-cal');
+    if (total && center(total)) return total;
+    const nav = document.querySelector('.nav-btn[data-target="#diary"]');
+    const icon = nav && (nav.querySelector('i') || nav);
+    return icon && center(icon) ? icon : null;
+  }
+
+  /** Thời gian còn lại (ms) tới khi chip chạm đích — trang Nhật ký dùng để đếm số đúng lúc chip tới */
+  function entryFlightMs() { return Math.max(0, Math.round(flightEnd - performance.now())); }
+
+  function celebrateEntry(kcal) {
+    try {
+      if (reduced() || !(kcal > 0)) return;
+      const target = findEntryTarget();
+      const end = center(target) || { x: window.innerWidth / 2, y: 70 };
+      const start = (Date.now() - lastPtr.t < 4000 && lastPtr.t) ? { x: lastPtr.x, y: lastPtr.y } : { x: window.innerWidth / 2, y: window.innerHeight * 0.72 };
+      const DUR = 950;
+      flightEnd = performance.now() + DUR;
+
+      // đường cong bậc 2: điểm điều khiển nằm cao hơn cả 2 đầu → chip bay vòng lên rồi lao xuống đích
+      const ctrl = { x: (start.x + end.x) / 2 + (end.x - start.x) * 0.15, y: Math.min(start.y, end.y) - 130 };
+      const at = (t) => {
+        const u = 1 - t;
+        return { x: u * u * start.x + 2 * u * t * ctrl.x + t * t * end.x, y: u * u * start.y + 2 * u * t * ctrl.y + t * t * end.y };
+      };
+      const frames = (scaleMul) => [0, 0.12, 0.25, 0.4, 0.55, 0.7, 0.85, 1].map((t) => {
+        const p = at(t);
+        const sc = (t < 0.25 ? 0.6 + t * 2.2 : 1.15 - (t - 0.25) * 0.75) * scaleMul;
+        return { offset: t, opacity: t === 0 ? 0 : (t > 0.94 ? 0.85 : 1), transform: `translate(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px) translate(-50%, -50%) scale(${Math.max(0.35, sc).toFixed(2)})` };
+      });
+      const opts = (delay) => ({ duration: DUR, delay, easing: 'cubic-bezier(0.45, 0, 0.25, 1)', fill: 'both' });
+
+      const chip = document.createElement('div');
+      chip.className = 'nf-chip nf-fly';
+      chip.textContent = `+${kcal} kcal`;
+      chip.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(chip);
+      chip.animate(frames(1), opts(0));
+
+      // đuôi sao chổi: 5 ngôi sao nhỏ bay theo sau, mỗi ngôi trễ hơn một chút
+      const colors = ['var(--nf-s1)', 'var(--nf-s2)', 'var(--nf-s3)'];
+      const dots = [];
+      for (let i = 1; i <= 5; i++) {
+        const d = document.createElement('span');
+        d.className = 'nf-fly-dot';
+        d.style.setProperty('--c', colors[i % 3]);
+        document.body.appendChild(d);
+        d.animate(frames(0.32 + (5 - i) * 0.05), opts(i * 55));
+        dots.push(d);
+      }
+
+      setTimeout(() => {
+        chip.remove();
+        dots.forEach((d) => d.remove());
+        pop(target);
+        burst(end.x, end.y);
+      }, DUR + 5 * 55 + 20);
+    } catch (e) { console.warn('[NF_Fx] celebrateEntry:', e); }
+  }
+
+  /** Đếm số từ `from` tới `to` (sau `delay` ms). Tự dừng nếu nội dung bị nơi khác thay đổi. */
+  function tweenNumber(el, from, to, opts) {
+    try {
+      const o = opts || {};
+      if (!el || reduced() || !(to > from)) { if (el) el.textContent = to; return; }
+      const delay = o.delay || 0, dur = o.duration || 700;
+      const fmt = (n) => (NF_UI && NF_UI.formatNumber && o.grouped ? NF_UI.formatNumber(n) : String(n));
+      el.textContent = fmt(from);
+      let last = el.textContent;
+      const t0 = performance.now() + delay;
+      const frame = (now) => {
+        if (!el.isConnected || el.textContent !== last) { return; }        // đã bị thay/gỡ → dừng, không ghi đè
+        const p = Math.max(0, Math.min(1, (now - t0) / dur));
+        const v = p >= 1 ? to : Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+        last = fmt(v);
+        el.textContent = last;
+        if (p < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    } catch (e) { if (el) el.textContent = to; }
+  }
+
+  /* — Câu đố — */
+
+  function wrongFlash() {
+    try {
+      const el = document.createElement('div');
+      el.className = 'nf-wrong-flash';
+      el.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(el);
+      const a = el.animate([{ opacity: 0 }, { opacity: 1, offset: 0.25 }, { opacity: 0 }], { duration: 420, easing: 'ease-out' });
+      a.onfinish = () => el.remove();
+      setTimeout(() => el.remove(), 700);
+      if (navigator.vibrate) navigator.vibrate(70);
+    } catch (e) { /* bỏ qua */ }
+  }
+
+  function comboChip(streak, host) {
+    const c = center(host);
+    if (!c) return;
+    const r = host.getBoundingClientRect();
+    floatText(`🔥 Combo ×${streak}`, Math.min(window.innerWidth - 70, Math.max(70, c.x)), r.top + 26, 'nf-combo');
+  }
+
+  /**
+   * Gọi ngay SAU khi thẻ câu đố đã dựng lại với đáp án.
+   * o: { correct, gained, streak, root }  — root = phần tử chứa câu đố
+   */
+  function quizFeedback(o) {
+    try {
+      if (reduced() || !o) return;
+      const host = o.root || document;
+      const good = host.querySelector('.quiz-option--correct');
+      const c = center(good);
+      if (!c) return;
+      if (o.correct) {
+        burst(c.x, c.y);
+        if ((o.streak || 0) >= 3) setTimeout(() => burst(c.x + 46, c.y - 22), 150);
+        if ((o.streak || 0) >= 5) setTimeout(() => burst(c.x - 46, c.y + 12), 300);
+        if (o.gained) floatText(`+${o.gained} điểm`, c.x, c.y - 8, 'nf-float--good');
+        if ((o.streak || 0) >= 2) setTimeout(() => comboChip(o.streak, host.closest ? (host.closest('.card') || host) : host), 260);
+      } else {
+        wrongFlash();
+        good.classList.add('nf-reveal');            // đáp án đúng nhấp nháy viền để bạn thấy ngay
+        setTimeout(() => good.classList.remove('nf-reveal'), 2200);
+      }
+    } catch (e) { console.warn('[NF_Fx] quizFeedback:', e); }
+  }
+
+  /** Xong lượt 5 câu: 5/5 → pháo hoa nhiều điểm; còn lại → 1 lần nổ nhẹ */
+  function quizFinished(o) {
+    try {
+      if (reduced() || !o) return;
+      const host = o.root && o.root.closest ? (o.root.closest('.card') || o.root) : o.root;
+      const r = host && host.getBoundingClientRect ? host.getBoundingClientRect() : null;
+      const cx = r ? r.left + r.width / 2 : window.innerWidth / 2;
+      const cy = r ? r.top + Math.min(r.height / 2, 200) : window.innerHeight / 2;
+      if (o.total && o.score === o.total) {
+        [[0, 0], [180, -60], [340, 70], [520, -30], [700, 40]].forEach(([d, dx], i) => setTimeout(() => burst(cx + dx * (i % 2 ? 1 : -1) * 0.6, cy + (i % 3) * 22 - 20), d));
+        floatText('Hoàn hảo! 🎓', cx, cy - 20, 'nf-combo');
+      } else if (o.total) {
+        burst(cx, cy);
+        floatText(`${o.score}/${o.total} câu đúng`, cx, cy - 10, 'nf-float--good');
+      }
+    } catch (e) { /* bỏ qua */ }
+  }
+
   /* ─── Khởi tạo ─── */
 
   function syncRoute() {
@@ -335,6 +531,11 @@ const NF_Fx = (() => {
       syncRoute();
       window.addEventListener('hashchange', syncRoute);
       document.addEventListener('pointerdown', onPointerDown, { passive: true });
+      // Ghi món từ BẤT KỲ nguồn nào (tra cứu, camera, thủ công, kế hoạch AI) đều phát 'nf:diary' → chip +kcal bay tới nhật ký
+      window.addEventListener('nf:diary', (e) => {
+        const d = (e && e.detail) || {};
+        if (d.action === 'add' && d.entry) celebrateEntry(Math.round(Number(d.entry.calories) || 0));
+      });
 
       // Đổi giao diện (cấp lên / chọn thủ công / xem thử) → dựng lại cảnh nền tương ứng
       new MutationObserver(scheduleRebuild).observe(document.documentElement, { attributes: true, attributeFilter: ['data-nf-realm'] });
@@ -358,5 +559,5 @@ const NF_Fx = (() => {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 
-  return { enhancePage, burst, lookChanged, rebuild: buildScene };
+  return { enhancePage, burst, lookChanged, rebuild: buildScene, pop, floatText, celebrateEntry, entryFlightMs, tweenNumber, quizFeedback, quizFinished };
 })();

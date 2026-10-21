@@ -15,6 +15,8 @@ const NF_PageGame = (() => {
   let awardHandler = null;
   let quizError = '';
   let quizLoading = false;
+  let comboStreak = 0;        // số câu đúng liên tiếp (hiệu ứng combo, js/fx.js)
+  let pendingFinish = false;  // vừa trả lời câu cuối → khi hiện thẻ kết quả thì bắn pháo hoa
   let feedback = null;            // { choice, correctIndex, explain, correct, gained } của câu vừa trả lời
   let practice = null;            // { questions, index, score, feedback } — luyện tập, không tính điểm
 
@@ -247,6 +249,10 @@ const NF_PageGame = (() => {
           <i class="fa-solid fa-dumbbell"></i> Chơi thêm (luyện tập, không tính điểm)
         </button>`;
       el.querySelector('#btn-quiz-practice').onclick = startPractice;
+      if (pendingFinish) {
+        pendingFinish = false;
+        if (typeof NF_Fx !== 'undefined') NF_Fx.quizFinished({ score: quiz.score, total: NF_Game.QUIZ_SIZE, root: el });
+      }
       return;
     }
 
@@ -279,6 +285,11 @@ const NF_PageGame = (() => {
           }
           renderQuiz();
           renderStats();
+          if (feedback) {
+            comboStreak = feedback.correct ? comboStreak + 1 : 0;
+            if (index === NF_Game.QUIZ_SIZE - 1) pendingFinish = true;
+            if (typeof NF_Fx !== 'undefined') NF_Fx.quizFeedback({ correct: feedback.correct, gained: feedback.gained, streak: comboStreak, root: el });
+          }
         };
       });
     }
@@ -306,6 +317,7 @@ const NF_PageGame = (() => {
           <button type="button" class="btn btn--primary" id="btn-practice-again" style="flex:1 1 10rem;">Chơi tiếp</button>
           <button type="button" class="btn btn--outline" id="btn-practice-exit" style="flex:1 1 10rem;">Xong</button>
         </div>`;
+      if (typeof NF_Fx !== 'undefined' && !p.celebrated) { p.celebrated = true; NF_Fx.quizFinished({ score: p.score, total: p.questions.length, root: el }); }
       el.querySelector('#btn-practice-again').onclick = startPractice;
       el.querySelector('#btn-practice-exit').onclick = () => { practice = null; renderQuiz(); };
       return;
@@ -330,6 +342,8 @@ const NF_PageGame = (() => {
           if (correct) p.score++;
           p.feedback = { choice, correctIndex: q.answer, explain: q.explain, correct, gained: 0 };
           renderQuiz();
+          comboStreak = correct ? comboStreak + 1 : 0;
+          if (typeof NF_Fx !== 'undefined') NF_Fx.quizFeedback({ correct, gained: 0, streak: comboStreak, root: el });
         };
       });
     }
@@ -354,6 +368,8 @@ const NF_PageGame = (() => {
   /* ─── Trang ─── */
 
   function render(container) {
+    comboStreak = 0;
+    pendingFinish = false;
     root = container;
     feedback = null;
     practice = null;

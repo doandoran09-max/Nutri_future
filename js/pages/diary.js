@@ -53,7 +53,14 @@ const NF_PageDiary = (() => {
 
   /* ─── Khung trang: chỉ dựng 1 lần khi vào trang / đổi trang ─── */
 
+  // Phục vụ hiệu ứng ghi món (js/fx.js): tổng calo đang hiển thị & id món vừa thêm
+  let shownTotal = null;
+  let shownDate = null;
+  let lastAddedId = null;
+
   function render(container, date = null) {
+    shownTotal = null;   // dựng lại trang → lần refresh đầu KHÔNG đếm số
+    shownDate = null;
     // Canvas cũ sắp bị thay → hủy biểu đồ cũ (nếu không sẽ update nhầm vào canvas đã bị gỡ khỏi trang)
     destroyMacroChart();
     currentContainer = container;
@@ -176,7 +183,15 @@ const NF_PageDiary = (() => {
 
     // Tổng calo + tag %
     const totalCalEl = container.querySelector('#diary-total-cal');
-    if (totalCalEl) totalCalEl.textContent = summary.totalCalories;
+    if (totalCalEl) {
+      totalCalEl.textContent = summary.totalCalories;
+      // Thêm món: giữ số cũ tới khi chip "+kcal" bay tới rồi mới đếm lên số mới
+      if (shownTotal !== null && shownDate === selectedDate && summary.totalCalories > shownTotal && typeof NF_Fx !== 'undefined') {
+        NF_Fx.tweenNumber(totalCalEl, shownTotal, summary.totalCalories, { delay: NF_Fx.entryFlightMs(), duration: 650 });
+      }
+    }
+    shownTotal = summary.totalCalories;
+    shownDate = selectedDate;
     const unitEl = container.querySelector('#diary-tdee-unit');
     if (unitEl) unitEl.textContent = `/ ${tdee} kcal`;
     const tagEl = container.querySelector('#diary-tdee-tag');
@@ -210,6 +225,12 @@ const NF_PageDiary = (() => {
     if (mealsContainer) {
       mealsContainer.innerHTML = renderMealsListHtml(summary);
       bindMealListEvents(container);
+      if (lastAddedId !== null) {           // món vừa thêm: trượt vào + viền sáng
+        const btn = mealsContainer.querySelector(`.btn-delete-entry[data-id="${lastAddedId}"]`);
+        const row = btn && btn.closest('.diary-entry');
+        if (row) row.classList.add('nf-entry-new');
+        lastAddedId = null;
+      }
     }
 
     updateMacroChart(summary);
@@ -525,7 +546,8 @@ const NF_PageDiary = (() => {
         time: NF_UI.getTimeNow(),
       };
 
-      NF_Storage.addDiaryEntry(entry, selectedDate);
+      const added = NF_Storage.addDiaryEntry(entry, selectedDate);
+      lastAddedId = added && added.id !== undefined ? added.id : null;
       NF_UI.closeModal();
       NF_UI.showToast(`Đã thêm "${name}" vào ${mealType}!`, 'success');
       refresh();

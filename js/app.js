@@ -15,6 +15,12 @@ const NF_App = (() => {
     '#game': NF_PageGame,
   };
 
+  // Thứ tự tab ở thanh điều hướng → quyết định hướng trượt khi chuyển trang (Lịch sử / Hồ sơ là trang phụ → trồi lên)
+  const TAB_ORDER = ['#home', '#lookup', '#camera', '#diary', '#game'];
+  const LEAVE_MS = 130;
+  let navToken = 0;        // mỗi lần điều hướng +1: nếu người dùng bấm tiếp trong lúc trang cũ đang mờ đi, chỉ lần bấm cuối được dựng
+  let leaving = null;      // { anim, promise } khi trang cũ đang mờ đi
+
   let currentRoute = null;
   let lastProfileMode = null;   // true = đang ở chế độ nhập hồ sơ bắt buộc (onboarding)
   let gateNoticeShown = false;  // thông báo chặn (modal) chỉ hiện 1 lần mỗi lần tải trang
@@ -91,15 +97,36 @@ const NF_App = (() => {
     return false;
   }
 
+  const prefersReduced = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  /** Hướng chuyển trang: 'fwd' | 'back' (giữa các tab) | 'up' (trang phụ) | null (lần đầu / cùng trang) */
+  function transitionDir(from, to) {
+    if (!from || from === to) return null;
+    const a = TAB_ORDER.indexOf(from), b = TAB_ORDER.indexOf(to);
+    if (a === -1 || b === -1) return 'up';
+    return b > a ? 'fwd' : 'back';
+  }
+
+  /** Trang cũ mờ đi và lệch nhẹ ngược hướng trong ~130ms. Trả về { anim, promise }. */
+  function startLeave(container, dir) {
+    const dx = dir === 'fwd' ? -26 : dir === 'back' ? 26 : 0;
+    const dy = dir === 'up' ? 8 : 0;
+    const anim = container.animate(
+      [{ opacity: 1, transform: 'translate3d(0,0,0)' }, { opacity: 0, transform: `translate3d(${dx}px, ${dy}px, 0)` }],
+      { duration: LEAVE_MS, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' }
+    );
+    // Dự phòng: máy chậm / tab đang ẩn có thể khiến animation không chạy → tối đa chờ thêm ~220ms rồi vẫn chuyển trang
+    const timeout = new Promise((resolve) => setTimeout(resolve, LEAVE_MS + 220));
+    return { anim, promise: Promise.race([anim.finished.catch(() => {}), timeout]) };
+  }
+
   function handleRoute() {
     const rawHash = window.location.hash || '#home';
     let [path, queryStr] = rawHash.split('?');
 
     if (!guard(path)) return;
 
-    const pageHandler = routes[path] || routes['#home'];
     const contentContainer = document.getElementById('app-content');
-
     if (!contentContainer) return;
 
     // Ở #profile, chế độ onboarding do TRẠNG THÁI hồ sơ quyết định (không phụ thuộc ?onboarding=1),
@@ -108,6 +135,32 @@ const NF_App = (() => {
     if (path === '#profile' && currentRoute === '#profile' && lastProfileMode === profileMode) {
       return; // đã ở đúng trang này — không dựng lại form (tránh mất dữ liệu đang gõ)
     }
+
+    const token = ++navToken;
+    const dir = transitionDir(currentRoute, path);
+    const canAnimate = dir && !prefersReduced() && !document.hidden && typeof contentContainer.animate === 'function' && contentContainer.firstElementChild;
+
+    if (!canAnimate && !leaving) {
+      renderRoute(path, queryStr, profileMode, dir, contentContainer);
+      return;
+    }
+
+    // Có trang đang hiển thị → cho nó mờ đi rồi mới dựng trang mới (bấm liên tiếp: chỉ lần cuối được dựng)
+    if (!leaving) leaving = startLeave(contentContainer, dir);
+    const current = leaving;
+    current.promise.then(() => {
+      if (token !== navToken) return;          // đã có điều hướng mới hơn
+      leaving = null;
+      try {
+        renderRoute(path, queryStr, profileMode, dir, contentContainer);
+      } finally {
+        current.anim.cancel();                 // luôn hiện lại nội dung, kể cả khi dựng trang gặp lỗi
+      }
+    });
+  }
+
+  function renderRoute(path, queryStr, profileMode, dir, contentContainer) {
+    const pageHandler = routes[path] || routes['#home'];
 
     // Dừng camera nếu rời khỏi trang camera
     if (currentRoute === '#camera' && path !== '#camera') {
@@ -118,6 +171,11 @@ const NF_App = (() => {
 
     currentRoute = path;
     updateNavActive(path);
+
+    // Hướng trượt của trang mới (CSS: css/level-fx-add.css); bỏ đi sau khi xong để không lặp lại khi trang tự dựng lại
+    if (dir) contentContainer.dataset.nfDir = dir; else delete contentContainer.dataset.nfDir;
+    clearTimeout(renderRoute._t);
+    renderRoute._t = setTimeout(() => { delete contentContainer.dataset.nfDir; }, 520);
 
     // Xử lý tham số query (ví dụ: ?date=YYYY-MM-DD)
     let queryParams = {};
