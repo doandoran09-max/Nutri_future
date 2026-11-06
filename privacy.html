@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#054fd4" />
+
+  <title>Quyền riêng tư &amp; Dữ liệu — NutriFuture</title>
+  <meta name="description" content="NutriFuture không có máy chủ backend: dữ liệu cá nhân chỉ lưu trong trình duyệt. Tìm hiểu dữ liệu nào tồn tại và Gemini API được dùng ra sao." />
+  <link rel="canonical" href="https://doandoran09-max.github.io/Nutri_future/privacy.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Quyền riêng tư & Dữ liệu — NutriFuture" />
+  <meta property="og:description" content="Dữ liệu cá nhân chỉ lưu trong trình duyệt — không có máy chủ backend." />
+  <meta property="og:url" content="https://doandoran09-max.github.io/Nutri_future/privacy.html" />
+  <meta property="og:image" content="https://doandoran09-max.github.io/Nutri_future/icons/icon-512.png" />
+  <meta property="og:locale" content="vi_VN" />
+
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+
+  <script>
+    (function () {
+      try {
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('nf_theme') || 'light');
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/static-pages.css" />
+</head>
+<body class="static-page">
+
+  <header class="static-page__header">
+    <a class="static-page__logo" href="index.html#home">🌿 Nutri<span>Future</span></a>
+    <a class="static-page__back" href="index.html#home">← Về trang chủ</a>
+  </header>
+
+  <main class="static-page__content">
+    <p class="static-page__eyebrow">Minh bạch dữ liệu</p>
+    <h1>Quyền riêng tư &amp; Dữ liệu</h1>
+
+    <p>
+      NutriFuture là ứng dụng web tĩnh, <strong>không có máy chủ backend riêng</strong> và
+      <strong>không có hệ thống tài khoản</strong>. Trang này mô tả chính xác dữ liệu nào tồn
+      tại, lưu ở đâu, và khi nào dữ liệu rời khỏi thiết bị của bạn.
+    </p>
+
+    <h2>Dữ liệu lưu trên thiết bị của bạn</h2>
+    <p>
+      Hồ sơ cá nhân (tuổi, giới tính, chiều cao, cân nặng, mức vận động), nhật ký bữa ăn, lịch
+      sử theo ngày, tiến trình học mà chơi (điểm, chuỗi ngày, huy hiệu) và các tùy chọn giao
+      diện (sáng/tối, model Gemini đã chọn) đều chỉ được lưu bằng
+      <code>localStorage</code> ngay trên trình duyệt của bạn. Không có bản sao nào của dữ liệu
+      này được gửi lên bất kỳ máy chủ nào của NutriFuture — vì dự án không có máy chủ nào cả.
+      Xóa dữ liệu trang web (hoặc gỡ cài đặt PWA) trên trình duyệt sẽ xóa toàn bộ dữ liệu này
+      vĩnh viễn; bạn có thể tự sao lưu bằng tính năng Xuất (Export) JSON trong tab Báo cáo.
+    </p>
+
+    <h2>Khi nào dữ liệu được gửi ra ngoài</h2>
+    <p>
+      Hai tính năng AI — <strong>Camera AI</strong> (nhận diện món ăn qua ảnh) và
+      <strong>Tra cứu/Tư vấn thực đơn</strong> (với món ngoài cơ sở dữ liệu nội bộ) — gửi trực
+      tiếp từ trình duyệt của bạn đến API <strong>Google Gemini</strong>
+      (<code>generativelanguage.googleapis.com</code>): ảnh món ăn hoặc câu hỏi văn bản bạn
+      nhập, cùng các chỉ số thể trạng cần thiết để cá nhân hóa câu trả lời. Việc này do
+      trình duyệt của bạn gọi trực tiếp tới Google — dữ liệu không đi qua máy chủ trung gian
+      nào của NutriFuture. Việc sử dụng dữ liệu phía Google tuân theo chính sách của chính
+      Google (xem <a href="https://ai.google.dev/gemini-api/terms">điều khoản Gemini API</a>).
+    </p>
+
+    <h2>Theo dõi &amp; quảng cáo</h2>
+    <p>
+      NutriFuture <strong>không</strong> dùng công cụ phân tích (analytics), pixel theo dõi hay
+      quảng cáo của bên thứ ba. Chính sách bảo mật nội dung (CSP) của trang giới hạn kết nối
+      mạng chỉ tới chính trang này và API Gemini nêu trên.
+    </p>
+
+    <h2>Câu hỏi</h2>
+    <p>
+      Nếu bạn có câu hỏi về dữ liệu, xem trang <a href="contact.html">Liên hệ</a> hoặc
+      README kỹ thuật tại
+      <a href="https://github.com/doandoran09-max/Nutri_future">mã nguồn trên GitHub</a>.
+    </p>
+  </main>
+
+  <footer class="static-page__footer">
+    NutriFuture — Đề tài KHKT THPT · <a href="index.html#home">Trang chủ</a> ·
+    <a href="about.html">Giới thiệu</a> · <a href="contact.html">Liên hệ</a>
+  </footer>
+</body>
+</html>

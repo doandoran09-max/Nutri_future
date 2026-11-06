@@ -1,0 +1,14 @@
+# NutriFuture — robots.txt
+# Toàn bộ nội dung trên trang đều công khai, không có khu vực riêng tư nào
+# cần chặn crawler. Dữ liệu người dùng (hồ sơ, nhật ký...) chỉ lưu cục bộ
+# trong trình duyệt (localStorage) và không bao giờ nằm trên một URL công khai,
+# nên không cần (và không thể) "Disallow" chúng ở đây.
+#
+# Mọi crawler và AI agent (bao gồm GPTBot, ClaudeBot, Google-Extended,
+# PerplexityBot, CCBot, Applebot-Extended...) đều được phép truy cập toàn bộ
+# trang qua quy tắc User-agent: * bên dưới — không cần khai riêng từng bot.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://doandoran09-max.github.io/Nutri_future/sitemap.xml

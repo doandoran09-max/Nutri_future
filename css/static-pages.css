@@ -1,0 +1,118 @@
+/* ==========================================================================
+   NutriFuture — Trang tĩnh (About / Contact / Privacy / 404)
+   --------------------------------------------------------------------------
+   Các trang này KHÔNG phải một phần của SPA (không có sidebar/bottom-nav/JS
+   app shell) — nạp css/main.css để dùng chung token màu/chữ/bo góc/shadow và
+   lớp .card, nhưng tự định nghĩa layout riêng ở đây thay vì dùng #app-content
+   (vốn có padding dành cho sidebar desktop của app).
+   ========================================================================== */
+
+.static-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-family);
+}
+
+.static-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.static-page__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-md);
+  color: var(--primary-600);
+  text-decoration: none;
+}
+
+.static-page__logo span { color: var(--ink); }
+
+.static-page__back {
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  transition: border-color var(--duration-normal) var(--ease-out),
+              color var(--duration-normal) var(--ease-out);
+}
+.static-page__back:hover { border-color: var(--primary-300); color: var(--primary-600); }
+
+.static-page__content {
+  width: 100%;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: var(--sp-7) var(--sp-5) var(--sp-8);
+  flex: 1;
+}
+
+.static-page__eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--primary-600);
+  margin-bottom: var(--sp-2);
+}
+
+.static-page__content h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  letter-spacing: var(--tracking-display);
+  margin-bottom: var(--sp-5);
+}
+
+.static-page__content h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  margin: var(--sp-7) 0 var(--sp-3);
+}
+
+.static-page__content p,
+.static-page__content li {
+  color: var(--ink-soft);
+  line-height: 1.7;
+  margin-bottom: var(--sp-3);
+}
+
+.static-page__content ul { padding-left: var(--sp-5); list-style: disc; }
+.static-page__content strong { color: var(--ink); }
+.static-page__content a { color: var(--primary-600); text-decoration: underline; text-underline-offset: 2px; }
+.static-page__content a:hover { color: var(--primary-700); }
+
+.static-page__footer {
+  text-align: center;
+  padding: var(--sp-5);
+  color: var(--ink-faint);
+  font-size: var(--fs-xs);
+  border-top: 1px solid var(--line);
+}
+
+/* Trang 404: căn giữa toàn khối nội dung theo chiều dọc */
+.static-page--notfound .static-page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  min-height: calc(100vh - 8rem);
+}
+.static-page--notfound .static-page__code {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-4xl);
+  color: var(--primary-600);
+  letter-spacing: var(--tracking-display);
+}

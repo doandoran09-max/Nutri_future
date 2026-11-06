@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#054fd4" />
+
+  <title>Giới thiệu — NutriFuture</title>
+  <meta name="description" content="NutriFuture là ứng dụng web tĩnh (PWA) dùng Google Gemini AI giúp học sinh THPT theo dõi dinh dưỡng — tìm hiểu tính năng, đối tượng sử dụng và công nghệ." />
+  <link rel="canonical" href="https://doandoran09-max.github.io/Nutri_future/about.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Giới thiệu — NutriFuture" />
+  <meta property="og:description" content="NutriFuture là ứng dụng web tĩnh (PWA) dùng Google Gemini AI giúp học sinh THPT theo dõi dinh dưỡng." />
+  <meta property="og:url" content="https://doandoran09-max.github.io/Nutri_future/about.html" />
+  <meta property="og:image" content="https://doandoran09-max.github.io/Nutri_future/icons/icon-512.png" />
+  <meta property="og:locale" content="vi_VN" />
+
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+
+  <script>
+    (function () {
+      try {
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('nf_theme') || 'light');
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/static-pages.css" />
+</head>
+<body class="static-page">
+
+  <header class="static-page__header">
+    <a class="static-page__logo" href="index.html#home">🌿 Nutri<span>Future</span></a>
+    <a class="static-page__back" href="index.html#home">← Về trang chủ</a>
+  </header>
+
+  <main class="static-page__content">
+    <p class="static-page__eyebrow">Giới thiệu dự án</p>
+    <h1>NutriFuture là gì?</h1>
+
+    <p>
+      <strong>NutriFuture</strong> là ứng dụng web di động (Mobile Web App), được xây dựng hoàn
+      toàn tĩnh (Static Single Page Application) và cài đặt được như PWA, giúp học sinh THPT
+      theo dõi dinh dưỡng hằng ngày. Đây là sản phẩm cho đề tài
+      <em>"Ứng dụng Trí tuệ Nhân tạo trong Phân tích và Tư vấn Dinh dưỡng Học đường cho Học
+      sinh THPT"</em> tại Cuộc thi Nghiên cứu Khoa học Kỹ thuật (KHKT) cấp THPT.
+    </p>
+
+    <h2>Dành cho ai</h2>
+    <p>
+      Ứng dụng hướng tới học sinh THPT Việt Nam (khoảng 15–22 tuổi) muốn hiểu và theo dõi nhu
+      cầu dinh dưỡng của bản thân. Toàn bộ giao diện hiện chỉ có tiếng Việt.
+    </p>
+
+    <h2>Tính năng chính</h2>
+    <ul>
+      <li>Nhận diện món ăn qua ảnh chụp bằng Google Gemini Vision, ước tính calo/đạm/béo/carb.</li>
+      <li>Tra cứu dinh dưỡng theo tên món (cơ sở dữ liệu nội bộ + Gemini cho món ngoài CSDL).</li>
+      <li>Tính chỉ số cá nhân: BMI (WHO), BMR (Mifflin–St Jeor), TDEE (ACSM) và tỷ lệ macro
+        khuyến nghị theo Viện Dinh Dưỡng Quốc Gia Việt Nam.</li>
+      <li>Nhật ký dinh dưỡng theo ngày kèm biểu đồ, lịch sử theo tuần.</li>
+      <li>Học mà chơi: câu đố dinh dưỡng hằng ngày, chuỗi ngày (streak), huy hiệu.</li>
+    </ul>
+
+    <h2>Công nghệ &amp; kiến trúc</h2>
+    <p>
+      NutriFuture dùng HTML/CSS/JavaScript thuần (không framework), chạy 100% phía trình
+      duyệt — <strong>không có máy chủ backend riêng</strong>. Ứng dụng được lưu trữ trên
+      GitHub Pages và triển khai qua GitHub Actions. Dữ liệu cá nhân (hồ sơ, nhật ký, lịch sử,
+      tiến trình game) chỉ lưu trong bộ nhớ cục bộ của trình duyệt (localStorage) — xem chi
+      tiết ở trang <a href="privacy.html">Quyền riêng tư</a>.
+    </p>
+
+    <p>
+      Mã nguồn đầy đủ, README kỹ thuật và ghi chú triển khai được công khai tại
+      <a href="https://github.com/doandoran09-max/Nutri_future">github.com/doandoran09-max/Nutri_future</a>.
+    </p>
+  </main>
+
+  <footer class="static-page__footer">
+    NutriFuture — Đề tài KHKT THPT · <a href="index.html#home">Trang chủ</a> ·
+    <a href="contact.html">Liên hệ</a> · <a href="privacy.html">Quyền riêng tư</a>
+  </footer>
+</body>
+</html>

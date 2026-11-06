@@ -40,6 +40,14 @@
   <title>NutriFuture — AI Dinh Dưỡng Học Đường THPT</title>
   <meta name="description" content="NutriFuture — Ứng dụng AI phân tích và tư vấn dinh dưỡng học đường cho học sinh THPT, tích hợp Google Gemini Vision & Text API." />
 
+  <link rel="canonical" href="https://doandoran09-max.github.io/Nutri_future/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="NutriFuture — AI Dinh Dưỡng Học Đường THPT" />
+  <meta property="og:description" content="NutriFuture — Ứng dụng AI phân tích và tư vấn dinh dưỡng học đường cho học sinh THPT, tích hợp Google Gemini Vision & Text API." />
+  <meta property="og:url" content="https://doandoran09-max.github.io/Nutri_future/" />
+  <meta property="og:image" content="https://doandoran09-max.github.io/Nutri_future/icons/icon-512.png" />
+  <meta property="og:locale" content="vi_VN" />
+
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
@@ -57,8 +65,55 @@
   <!-- FX: 9 giao diện theo cấp + hiệu ứng lấp lánh/chuyển động. Nạp SAU main.css, chỉ đổi màu/hiệu ứng, không đổi bố cục -->
   <link rel="stylesheet" href="css/level-fx-add.css" />
   <link rel="stylesheet" href="css/looks.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://doandoran09-max.github.io/Nutri_future/#app",
+        "name": "NutriFuture",
+        "alternateName": "NutriFuture — AI Dinh Dưỡng Học Đường",
+        "description": "Ứng dụng AI phân tích và tư vấn dinh dưỡng học đường cho học sinh THPT, tích hợp Google Gemini Vision & Text API.",
+        "url": "https://doandoran09-max.github.io/Nutri_future/",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Any (Progressive Web App chạy trên mọi trình duyệt hiện đại)",
+        "inLanguage": "vi",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "VND" },
+        "image": "https://doandoran09-max.github.io/Nutri_future/icons/icon-512.png",
+        "sameAs": ["https://github.com/doandoran09-max/Nutri_future"],
+        "publisher": { "@id": "https://doandoran09-max.github.io/Nutri_future/#org" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://doandoran09-max.github.io/Nutri_future/#org",
+        "name": "NutriFuture",
+        "url": "https://doandoran09-max.github.io/Nutri_future/",
+        "logo": "https://doandoran09-max.github.io/Nutri_future/icons/icon-512.png",
+        "sameAs": ["https://github.com/doandoran09-max/Nutri_future"],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "technical support",
+          "url": "https://github.com/doandoran09-max/Nutri_future/issues"
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
+
+  <!-- Liên kết tĩnh, có sẵn trong HTML gốc (không cần chạy JS) để crawler/agent
+       tìm thấy tài liệu & mã nguồn — ẩn khỏi màn hình nhưng vẫn đọc được bởi
+       trình đọc màn hình (dùng lại .sr-only hiện có, không đổi layout hiển thị). -->
+  <nav class="sr-only" aria-label="Thêm thông tin về NutriFuture">
+    <a href="about.html">Giới thiệu NutriFuture</a>
+    <a href="contact.html">Liên hệ</a>
+    <a href="privacy.html">Quyền riêng tư &amp; Dữ liệu</a>
+    <a href="https://github.com/doandoran09-max/Nutri_future">Mã nguồn trên GitHub</a>
+  </nav>
 
   <header id="app-header">
     <div class="header-inner">

@@ -5,7 +5,7 @@
  *
  * Tăng CACHE_VERSION mỗi khi đổi cấu trúc file tĩnh để buộc trình duyệt tải bản mới.
  */
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const CACHE_NAME = `nutrifuture-cache-${CACHE_VERSION}`;
 
 // Chỉ liệt kê file same-origin ở đây — addAll sẽ lỗi toàn bộ nếu 1 URL cross-origin
@@ -18,6 +18,7 @@ const CORE_ASSETS = [
   './css/main.css',
   './css/level-fx-add.css',
   './css/looks.css',
+  './css/static-pages.css',
   './js/app.js',
   './js/storage.js',
   './js/data/foods.js',
@@ -40,6 +41,10 @@ const CORE_ASSETS = [
   './js/pages/game.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './about.html',
+  './contact.html',
+  './privacy.html',
+  './404.html',
 ];
 
 self.addEventListener('install', (event) => {
