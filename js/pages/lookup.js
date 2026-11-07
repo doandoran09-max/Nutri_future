@@ -330,7 +330,7 @@ const NF_PageLookup = (() => {
       <div class="result-card ${opts.noAnim ? '' : 'result-card--fade'}" style="margin-top:var(--sp-3);">
         <div class="result-card__header">
           <div>
-            <span class="result-card__badge" style="background:var(--blue-50); color:var(--blue-700); border-color:var(--blue-200);">
+            <span class="result-card__badge" style="background:var(--sky-50); color:var(--sky-700); border-color:var(--sky-200);">
               <i class="fa-solid ${badgeIcon}"></i> ${badgeText}
             </span>
             <h2 class="result-card__name" style="margin-top:0.25rem;">${esc(data.name)}</h2>
@@ -348,7 +348,7 @@ const NF_PageLookup = (() => {
         <div class="nutrient-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom:var(--sp-3);">
           <div class="nutrient-box">
             <div class="nutrient-box__label">Carb</div>
-            <div class="nutrient-box__value" style="color:var(--blue-600);">${n(data.carb)}g</div>
+            <div class="nutrient-box__value" style="color:var(--sky-600);">${n(data.carb)}g</div>
           </div>
           <div class="nutrient-box">
             <div class="nutrient-box__label">Protein</div>

@@ -89,7 +89,7 @@ const NF_PageHome = (() => {
                 <div class="nutrient-grid">
                   <div class="nutrient-box">
                     <span class="nutrient-box__label">Carb</span>
-                    <div class="nutrient-box__value" style="color:var(--blue-600);">${summary.totalCarb}g</div>
+                    <div class="nutrient-box__value" style="color:var(--sky-600);">${summary.totalCarb}g</div>
                   </div>
                   <div class="nutrient-box">
                     <span class="nutrient-box__label">Protein</span>
@@ -127,7 +127,7 @@ const NF_PageHome = (() => {
                   </div>
 
                   <div class="quick-card" onclick="location.hash='#lookup'">
-                    <div class="quick-card__icon" style="background:var(--blue-100); color:var(--blue-700);">
+                    <div class="quick-card__icon" style="background:var(--sky-100); color:var(--sky-700);">
                       <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                     <div class="quick-card__title">Tra cứu AI</div>

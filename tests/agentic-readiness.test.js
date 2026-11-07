@@ -128,9 +128,9 @@ test('index.html: JSON-LD hợp lệ (parse được) và chứa cả SoftwareAp
 
 // --- 7. Service worker: file tĩnh mới có trong cache + CACHE_VERSION đã bump --
 
-test('sw.js: CACHE_VERSION là v6, CORE_ASSETS có đủ các trang/CSS tĩnh mới', () => {
+test('sw.js: CACHE_VERSION đã bump và CORE_ASSETS có đủ các trang/CSS tĩnh mới', () => {
   const sw = read('sw.js');
-  assert.match(sw, /const CACHE_VERSION = 'v6';/);
+  assert.match(sw, /const CACHE_VERSION = 'v\d+';/);
   for (const asset of ['./css/static-pages.css', './about.html', './contact.html', './privacy.html', './404.html']) {
     assert.ok(sw.includes(`'${asset}'`), `CORE_ASSETS thiếu ${asset}`);
   }

@@ -180,6 +180,23 @@ const NF_PageProfile = (() => {
                 </select>
               </div>
 
+              <div style="margin-bottom:var(--sp-4);">
+                <label class="card__label">THÀNH PHẦN DỊ ỨNG (NẾU CÓ)</label>
+                <p class="text-xs text-muted" style="margin:0.25rem 0 var(--sp-2);">
+                  Dùng để cảnh báo khi Camera AI/Tra cứu phát hiện món ăn có thể chứa thành phần này.
+                  Đây là cảnh báo <strong>ước tính</strong>, không thay thế việc tự kiểm tra thành phần thật.
+                </p>
+                <div id="prof-allergy-chips" style="display:flex; flex-wrap:wrap; gap:var(--sp-2);">
+                  ${NF_Nutrition.ALLERGEN_CATEGORIES.map((c) => `
+                    <button type="button" class="allergy-chip ${Array.isArray(profile.allergies) && profile.allergies.includes(c.id) ? 'is-selected' : ''}" data-allergen-id="${c.id}">
+                      <span class="allergy-chip__check"><i class="fa-solid fa-check"></i></span>${NF_UI.escapeHtml(c.label)}
+                    </button>
+                  `).join('')}
+                </div>
+                <input type="text" id="prof-allergy-notes" class="search-bar__input" style="margin-top:var(--sp-2); padding-left:var(--sp-3);"
+                       value="${NF_UI.escapeHtml(profile.allergyNotes || '')}" placeholder="Dị ứng khác (nếu có) — ghi tự do, vd: hành, sầu riêng..." />
+              </div>
+
               <div style="display:flex; gap:var(--sp-2);">
                 <button type="button" class="btn btn--primary" id="btn-save-profile" style="flex:1;">
                   <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin & Cập nhật
@@ -297,6 +314,8 @@ const NF_PageProfile = (() => {
   }
 
   function getFormData(container) {
+    const allergyChips = container.querySelectorAll('.allergy-chip.is-selected');
+    const notesEl = container.querySelector('#prof-allergy-notes');
     return {
       name: container.querySelector('#prof-name').value.trim(),
       gender: container.querySelector('#prof-gender').value,
@@ -304,6 +323,8 @@ const NF_PageProfile = (() => {
       height: container.querySelector('#prof-height').value,
       weight: container.querySelector('#prof-weight').value,
       activity: container.querySelector('#prof-activity').value,
+      allergies: Array.from(allergyChips).map((c) => c.dataset.allergenId),
+      allergyNotes: notesEl ? notesEl.value.trim() : '',
     };
   }
 
@@ -384,6 +405,11 @@ const NF_PageProfile = (() => {
     inputs.forEach(input => {
       input.addEventListener('input', () => { input.classList.remove('is-invalid'); updateMetricsDisplay(container); });
       input.addEventListener('change', () => updateMetricsDisplay(container));
+    });
+
+    // Chip chọn dị ứng: bấm để toggle, không cần submit form
+    container.querySelectorAll('.allergy-chip').forEach((chip) => {
+      chip.onclick = () => chip.classList.toggle('is-selected');
     });
 
     // Nút Lưu Profile

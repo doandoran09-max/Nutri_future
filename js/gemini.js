@@ -381,6 +381,15 @@ const NF_Gemini = (() => {
   const _TAG_RULES = `- "hasVeg": true CHỈ KHI rau/củ là thành phần chính đáng kể của phần ăn (vd: rau luộc, salad, canh rau); ngược lại false.
 - "hasFruit": true CHỈ KHI phần ăn là trái cây hoặc có trái cây đáng kể; ngược lại false.`;
 
+  // Danh sách id danh mục dị ứng hợp lệ dùng trong prompt — lấy từ NF_Nutrition nếu đã nạp
+  // (luôn nạp trước gemini.js trong index.html), nếu không thì dùng danh sách dự phòng cố định.
+  const _ALLERGEN_PROMPT_IDS = (typeof NF_Nutrition !== 'undefined' && Array.isArray(NF_Nutrition.ALLERGEN_IDS))
+    ? NF_Nutrition.ALLERGEN_IDS.join(', ')
+    : 'peanut, tree_nuts, shellfish, fish, egg, dairy, soy, gluten, sesame';
+
+  const _ALLERGEN_RULES = `- "containsAllergens": mảng các id (CHỈ dùng đúng id trong danh sách sau, không tự đặt id khác, để trống [] nếu không có): ${_ALLERGEN_PROMPT_IDS}.
+  Chỉ liệt kê id khi thành phần đó THỰC SỰ xuất hiện rõ ràng trong món (vd có tôm/cua → "shellfish"; có trứng → "egg"; nước mắm/mắm tính là "fish"). Không đoán mò khi không chắc.`;
+
   function _foodFromAI(data, fallbackName, source) {
     return {
       name: _str(data.name, 120) || fallbackName,
@@ -395,9 +404,20 @@ const NF_Gemini = (() => {
       foodGroup: _str(data.foodGroup, 60),
       tags: _tagsFrom(data),
       advice: _str(data.advice, 400),
+      // Danh mục dị ứng (id cố định — xem NF_Nutrition.ALLERGEN_CATEGORIES) mà AI "nhìn"/suy luận
+      // thấy có thể có trong món; dùng để đối chiếu với hồ sơ dị ứng của học sinh (cảnh báo kép).
+      containsAllergens: _allergenIdList(data.containsAllergens),
       source,
       dataSource: 'ai',
     };
+  }
+
+  // Danh sách id danh mục dị ứng hợp lệ — lấy từ NF_Nutrition nếu đã nạp (luôn nạp trước gemini.js
+  // trong index.html); nếu không có module thì bỏ qua lọc, giữ nguyên id AI trả về.
+  function _allergenIdList(v) {
+    const arr = (Array.isArray(v) ? v : []).filter((x) => typeof x === 'string').slice(0, 9);
+    if (typeof NF_Nutrition === 'undefined' || !Array.isArray(NF_Nutrition.ALLERGEN_IDS)) return arr;
+    return arr.filter((id) => NF_Nutrition.ALLERGEN_IDS.includes(id));
   }
 
   /* ─── API: Nhận diện ảnh món ăn (Gemini Vision) ─── */
@@ -419,6 +439,7 @@ CHỈ trả về JSON thuần (không có text ngoài JSON), theo đúng format:
   "foodGroup": "Nhóm thực phẩm chính (Tinh bột / Chất đạm / Chất béo / Vitamin & Khoáng chất)",
   "hasVeg": false,
   "hasFruit": false,
+  "containsAllergens": [],
   "advice": "1 câu lời khuyên dinh dưỡng ngắn cho học sinh THPT (15-22 tuổi)"
 }
 
@@ -426,9 +447,12 @@ Nếu KHÔNG nhận diện được thức ăn trong hình, trả về:
 {"error": "NO_FOOD_DETECTED"}
 
 Lưu ý: Giá trị dinh dưỡng phải là số (không có đơn vị). Ước tính dựa trên khẩu phần trung bình tại Việt Nam.
-${_TAG_RULES}`;
+${_TAG_RULES}
+${_ALLERGEN_RULES}`;
 
-    const text = await _call(prompt, base64Image);
+    // maxTokens thấp hơn mặc định: schema JSON gọn, trả sớm giúp phản hồi nhanh hơn
+    // mà không cắt cụt dữ liệu hợp lệ (ước lượng tối đa thực tế ~500-600 token).
+    const text = await _call(prompt, base64Image, { maxTokens: 700 });
     const data = _parseJSON(text);
 
     if (data.error === 'NO_FOOD_DETECTED') {
@@ -456,13 +480,16 @@ CHỈ trả về JSON thuần (không có text ngoài JSON), theo đúng format:
   "foodGroup": "Nhóm thực phẩm (Tinh bột / Chất đạm / Chất béo / Vitamin & Khoáng chất)",
   "hasVeg": false,
   "hasFruit": false,
+  "containsAllergens": [],
   "advice": "1 câu lời khuyên dinh dưỡng cho học sinh THPT (15-22 tuổi)"
 }
 
 Lưu ý: Giá trị phải là số. Ước tính dựa trên khẩu phần trung bình tại Việt Nam.
-${_TAG_RULES}`;
+${_TAG_RULES}
+${_ALLERGEN_RULES}`;
 
-    const text = await _call(prompt);
+    // maxTokens thấp hơn mặc định: schema JSON gọn, trả sớm giúp phản hồi nhanh hơn.
+    const text = await _call(prompt, null, { maxTokens: 700 });
     return _foodFromAI(_parseJSON(text), String(query).slice(0, 120), 'lookup');
   }
 

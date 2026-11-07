@@ -392,6 +392,7 @@ const NF_PageCamera = (() => {
       const data = await NF_Gemini.analyzeImage(capturedBase64);
       lastAnalysisResult = data;
       scannerOverlay.classList.add('hidden');
+      currentPortionId = 'm'; // ảnh mới → về lại khẩu phần Vừa mặc định
       renderResult(resultBody, data);
       if (peekLabel) peekLabel.textContent = `${data.name} • ${data.calories} kcal`;
       NF_UI.showToast(`Đã nhận diện thành công: ${NF_UI.escapeHtml(data.name)}!`, 'success');
@@ -518,11 +519,29 @@ const NF_PageCamera = (() => {
     }
   }
 
+  let currentPortionId = 'm'; // reset mỗi lần phân tích ảnh mới (xem renderResult gọi từ nơi khác với data mới)
+
   function renderResult(targetEl, data) {
     const defaultMealType = getDefaultMealType();
+    const portions = NF_Nutrition.PORTION_SIZES;
+    const mult = NF_Nutrition.getPortionMultiplier(currentPortionId);
+    const scaled = NF_Nutrition.scalePortion(data, mult);
+    const allergyWarnings = NF_Nutrition.crossCheckAllergyWarning(data, NF_Nutrition.getUserAllergyIds());
 
     targetEl.innerHTML = `
       <div class="result-card" style="border:none; background:transparent; padding:0;">
+        ${allergyWarnings.length ? `
+          <div class="advice-box advice-box--warning" style="margin-bottom:var(--sp-3); border-color:var(--rose-200); background:var(--rose-50);">
+            <div style="font-weight:800; color:var(--rose-700); margin-bottom:0.25rem;">
+              <i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo dị ứng (ước tính)
+            </div>
+            <p style="color:var(--rose-700); margin:0;">
+              Món này có thể chứa: <strong>${NF_UI.escapeHtml(allergyWarnings.map((w) => w.label).join(', '))}</strong> —
+              trùng với hồ sơ dị ứng của bạn. Đây là cảnh báo AI ước tính, hãy tự kiểm tra thành phần thật trước khi ăn.
+            </p>
+          </div>
+        ` : ''}
+
         <div class="result-card__header">
           <div>
             <span class="result-card__badge">
@@ -530,12 +549,26 @@ const NF_PageCamera = (() => {
             </span>
             <h2 class="result-card__name" style="margin-top:0.25rem;">${NF_UI.escapeHtml(data.name)}</h2>
             <div class="result-card__serving">
-              <i class="fa-solid fa-bowl-food"></i> Khẩu phần: ${NF_UI.escapeHtml(data.serving)}
+              <i class="fa-solid fa-bowl-food"></i> Khẩu phần AI ước tính: ${NF_UI.escapeHtml(data.serving)}
             </div>
           </div>
           <div style="text-align:right;">
-            <div class="result-card__calories">${data.calories}</div>
+            <div class="result-card__calories">${scaled.calories}</div>
             <span class="result-card__cal-unit">kcal / phần</span>
+          </div>
+        </div>
+
+        <!-- Chọn lại định lượng thật: AI không đo được chính xác khối lượng trong ảnh -->
+        <div style="margin-bottom:var(--sp-3);">
+          <div class="text-xs text-muted" style="margin-bottom:0.25rem;">
+            Phần bạn ăn ít/nhiều hơn AI ước tính? Điều chỉnh lại:
+          </div>
+          <div class="portion-toggle" style="display:flex; gap:var(--sp-2);">
+            ${portions.map((p) => `
+              <button type="button" class="btn ${p.id === currentPortionId ? 'btn--primary' : 'btn--outline'} btn--sm portion-btn" data-portion-id="${p.id}" style="flex:1;">
+                ${p.label} (${p.shortLabel})
+              </button>
+            `).join('')}
           </div>
         </div>
 
@@ -543,19 +576,19 @@ const NF_PageCamera = (() => {
         <div class="nutrient-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom:var(--sp-3);">
           <div class="nutrient-box">
             <div class="nutrient-box__label">Carb</div>
-            <div class="nutrient-box__value" style="color:var(--blue-600);">${data.carb}g</div>
+            <div class="nutrient-box__value" style="color:var(--sky-600);">${scaled.carb}g</div>
           </div>
           <div class="nutrient-box">
             <div class="nutrient-box__label">Protein</div>
-            <div class="nutrient-box__value" style="color:var(--primary-600);">${data.protein}g</div>
+            <div class="nutrient-box__value" style="color:var(--primary-600);">${scaled.protein}g</div>
           </div>
           <div class="nutrient-box">
             <div class="nutrient-box__label">Fat</div>
-            <div class="nutrient-box__value" style="color:var(--amber-600);">${data.fat}g</div>
+            <div class="nutrient-box__value" style="color:var(--amber-600);">${scaled.fat}g</div>
           </div>
           <div class="nutrient-box">
             <div class="nutrient-box__label">Chất xơ</div>
-            <div class="nutrient-box__value" style="color:var(--primary-700);">${data.fiber}g</div>
+            <div class="nutrient-box__value" style="color:var(--primary-700);">${scaled.fiber == null ? '—' : scaled.fiber + 'g'}</div>
           </div>
         </div>
 
@@ -603,6 +636,13 @@ const NF_PageCamera = (() => {
       </div>
     `;
 
+    targetEl.querySelectorAll('.portion-btn').forEach((btn) => {
+      btn.onclick = () => {
+        currentPortionId = btn.dataset.portionId;
+        renderResult(targetEl, data); // vẽ lại với khẩu phần mới, giữ nguyên data AI gốc
+      };
+    });
+
     const btnSave = targetEl.querySelector('#btn-save-to-diary');
     const mealSelect = targetEl.querySelector('#save-meal-type-select');
 
@@ -612,11 +652,11 @@ const NF_PageCamera = (() => {
         const entry = {
           name: data.name,
           serving: data.serving,
-          calories: data.calories,
-          protein: data.protein,
-          fat: data.fat,
-          carb: data.carb,
-          fiber: data.fiber,
+          calories: scaled.calories,
+          protein: scaled.protein,
+          fat: scaled.fat,
+          carb: scaled.carb,
+          fiber: scaled.fiber,
           tags: Array.isArray(data.tags) ? data.tags : [],
           mealType: mealType,
           source: 'camera',
