@@ -7,6 +7,7 @@ const NF_PageLookup = (() => {
 
   let currentResult = null;
   let savedKey = null; // món vừa lưu vào nhật ký (để không cho lưu trùng khi giao diện vẽ lại)
+  let currentPortionId = 'm'; // reset mỗi lần tra món mới (xem doSearch)
 
   function render(container) {
     currentResult = null;
@@ -212,6 +213,8 @@ const NF_PageLookup = (() => {
         `;
       }
 
+      currentPortionId = 'm'; // món mới → về lại khẩu phần Vừa mặc định
+
       try {
         let data;
         if (hit) {
@@ -285,6 +288,7 @@ const NF_PageLookup = (() => {
         if (history[idx]) {
           currentResult = history[idx];
           savedKey = null;
+          currentPortionId = 'm';
           renderResult(resultArea, history[idx], {});
           // Scroll smoothly to result
           resultArea.scrollIntoView({ behavior: 'smooth' });
@@ -319,15 +323,33 @@ const NF_PageLookup = (() => {
       ? (data.advice ? 'Dữ liệu chuẩn + nhận xét AI' : 'Dữ liệu chuẩn')
       : 'Dữ liệu Gemini AI';
     const badgeIcon = isDb && !data.advice ? 'fa-circle-check' : 'fa-wand-magic-sparkles';
-    const fiberText = (data.fiber === null || data.fiber === undefined) ? '—' : `${n(data.fiber)}g`;
     const vit = Array.isArray(data.vitamins) ? data.vitamins : [];
     const min = Array.isArray(data.minerals) ? data.minerals : [];
     const key = `${data.name}|${data.serving}`;
     const alreadySaved = savedKey === key;
 
+    const portions = NF_Nutrition.PORTION_SIZES;
+    const mult = NF_Nutrition.getPortionMultiplier(currentPortionId);
+    const scaled = NF_Nutrition.scalePortion(data, mult);
+    const fiberText = (scaled.fiber === null || scaled.fiber === undefined) ? '—' : `${n(scaled.fiber)}g`;
+    // Đối chiếu dị ứng: món CSDL khớp theo từ khóa tên; món AI còn có containsAllergens do AI tự nhận diện
+    const allergyWarnings = NF_Nutrition.crossCheckAllergyWarning(data, NF_Nutrition.getUserAllergyIds());
+
     // Thẻ kết quả chỉ mờ dần (không trượt) để không "giật" khi thay khối loading
     targetEl.innerHTML = `
       <div class="result-card ${opts.noAnim ? '' : 'result-card--fade'}" style="margin-top:var(--sp-3);">
+        ${allergyWarnings.length ? `
+          <div class="advice-box advice-box--warning" style="margin-bottom:var(--sp-3); border-color:var(--rose-200); background:var(--rose-50);">
+            <div style="font-weight:800; color:var(--rose-700); margin-bottom:0.25rem;">
+              <i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo dị ứng (ước tính)
+            </div>
+            <p style="color:var(--rose-700); margin:0;">
+              Món này có thể chứa: <strong>${esc(allergyWarnings.map((w) => w.label).join(', '))}</strong> —
+              trùng với hồ sơ dị ứng của bạn. Đây là cảnh báo AI ước tính, hãy tự kiểm tra thành phần thật trước khi ăn.
+            </p>
+          </div>
+        ` : ''}
+
         <div class="result-card__header">
           <div>
             <span class="result-card__badge" style="background:var(--sky-50); color:var(--sky-700); border-color:var(--sky-200);">
@@ -335,12 +357,24 @@ const NF_PageLookup = (() => {
             </span>
             <h2 class="result-card__name" style="margin-top:0.25rem;">${esc(data.name)}</h2>
             <div class="result-card__serving">
-              <i class="fa-solid fa-bowl-food"></i> Khẩu phần: ${esc(data.serving)}
+              <i class="fa-solid fa-bowl-food"></i> Khẩu phần chuẩn: ${esc(data.serving)}
             </div>
           </div>
           <div style="text-align:right;">
-            <div class="result-card__calories">${n(data.calories)}</div>
+            <div class="result-card__calories">${n(scaled.calories)}</div>
             <span class="result-card__cal-unit">kcal / phần</span>
+          </div>
+        </div>
+
+        <!-- Size khẩu phần thật: S=70% / M=100% / L=130% so với khẩu phần chuẩn -->
+        <div style="margin-bottom:var(--sp-3);">
+          <div class="text-xs text-muted" style="margin-bottom:0.25rem;">Chọn cỡ bát/tô thực tế của bạn:</div>
+          <div class="portion-toggle" style="display:flex; gap:var(--sp-2);">
+            ${portions.map((p) => `
+              <button type="button" class="btn ${p.id === currentPortionId ? 'btn--primary' : 'btn--outline'} btn--sm portion-btn" data-portion-id="${p.id}" style="flex:1;">
+                ${p.label} (${p.shortLabel})
+              </button>
+            `).join('')}
           </div>
         </div>
 
@@ -348,15 +382,15 @@ const NF_PageLookup = (() => {
         <div class="nutrient-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom:var(--sp-3);">
           <div class="nutrient-box">
             <div class="nutrient-box__label">Carb</div>
-            <div class="nutrient-box__value" style="color:var(--sky-600);">${n(data.carb)}g</div>
+            <div class="nutrient-box__value" style="color:var(--sky-600);">${n(scaled.carb)}g</div>
           </div>
           <div class="nutrient-box">
             <div class="nutrient-box__label">Protein</div>
-            <div class="nutrient-box__value" style="color:var(--primary-600);">${n(data.protein)}g</div>
+            <div class="nutrient-box__value" style="color:var(--primary-600);">${n(scaled.protein)}g</div>
           </div>
           <div class="nutrient-box">
             <div class="nutrient-box__label">Fat</div>
-            <div class="nutrient-box__value" style="color:var(--amber-600);">${n(data.fat)}g</div>
+            <div class="nutrient-box__value" style="color:var(--amber-600);">${n(scaled.fat)}g</div>
           </div>
           <div class="nutrient-box">
             <div class="nutrient-box__label">Chất xơ</div>
@@ -412,8 +446,15 @@ const NF_PageLookup = (() => {
 
     // Số kcal đếm lên (chỉ lần hiển thị đầu; lần vẽ lại khi nhận xét AI đến thì không lặp hiệu ứng)
     if (!opts.noAnim) {
-      NF_UI.animateNumber(targetEl.querySelector('.result-card__calories'), 0, n(data.calories), 600);
+      NF_UI.animateNumber(targetEl.querySelector('.result-card__calories'), 0, scaled.calories, 600);
     }
+
+    targetEl.querySelectorAll('.portion-btn').forEach((btn) => {
+      btn.onclick = () => {
+        currentPortionId = btn.dataset.portionId;
+        renderResult(targetEl, data, { noAnim: true }); // vẽ lại với khẩu phần mới, giữ nguyên data gốc
+      };
+    });
 
     const btnSave = targetEl.querySelector('#btn-save-lookup-diary');
     const mealSelect = targetEl.querySelector('#lookup-meal-select');
@@ -424,11 +465,11 @@ const NF_PageLookup = (() => {
         const entry = {
           name: data.name,
           serving: data.serving,
-          calories: n(data.calories),
-          protein: n(data.protein),
-          fat: n(data.fat),
-          carb: n(data.carb),
-          fiber: n(data.fiber),
+          calories: scaled.calories,
+          protein: scaled.protein,
+          fat: scaled.fat,
+          carb: scaled.carb,
+          fiber: scaled.fiber,
           tags: Array.isArray(data.tags) ? data.tags.filter((t) => t === 'veg' || t === 'fruit') : [],
           mealType: mealType,
           source: 'lookup',
