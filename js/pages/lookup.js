@@ -166,6 +166,7 @@ const NF_PageLookup = (() => {
       minerals: [],
       foodGroup: hit.group,
       tags: [...hit.tags],
+      specialty: hit.specialty || '',
       advice: '',
       source: 'lookup',
       dataSource: 'db',
@@ -224,6 +225,9 @@ const NF_PageLookup = (() => {
           if (cached) data = applyComment(data, cached);
         } else {
           data = await NF_Gemini.searchFood(q);
+          // Tên AI trả về có thể khớp đúng một món trong CSDL (vd người dùng gõ tắt/viết khác) → lấy thêm đặc sản
+          const dbHit2 = NF_Foods.find(data.name);
+          data.specialty = dbHit2 ? (dbHit2.specialty || '') : '';
         }
         if (myToken !== token) return;
 
@@ -359,6 +363,11 @@ const NF_PageLookup = (() => {
             <div class="result-card__serving">
               <i class="fa-solid fa-bowl-food"></i> Khẩu phần chuẩn: ${esc(data.serving)}
             </div>
+            ${data.specialty ? `
+              <div class="tag tag--primary" style="margin-top:0.375rem; display:inline-flex; align-items:center; gap:0.25rem;">
+                <i class="fa-solid fa-map-location-dot"></i> Đặc sản ${esc(data.specialty)}
+              </div>
+            ` : ''}
           </div>
           <div style="text-align:right;">
             <div class="result-card__calories">${n(scaled.calories)}</div>

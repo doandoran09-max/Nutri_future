@@ -390,6 +390,10 @@ const NF_PageCamera = (() => {
 
     try {
       const data = await NF_Gemini.analyzeImage(capturedBase64);
+      // Đối chiếu tên AI nhận diện với CSDL nội bộ: nếu khớp đúng, lấy thêm "đặc sản vùng miền"
+      // (số liệu dinh dưỡng vẫn giữ nguyên từ AI vì đây là ước tính từ ảnh thực tế, không phải khẩu phần chuẩn CSDL).
+      const dbHit = NF_Foods.find(data.name);
+      data.specialty = dbHit ? (dbHit.specialty || '') : '';
       lastAnalysisResult = data;
       scannerOverlay.classList.add('hidden');
       currentPortionId = 'm'; // ảnh mới → về lại khẩu phần Vừa mặc định
@@ -551,6 +555,11 @@ const NF_PageCamera = (() => {
             <div class="result-card__serving">
               <i class="fa-solid fa-bowl-food"></i> Khẩu phần AI ước tính: ${NF_UI.escapeHtml(data.serving)}
             </div>
+            ${data.specialty ? `
+              <div class="tag tag--primary" style="margin-top:0.375rem; display:inline-flex; align-items:center; gap:0.25rem;">
+                <i class="fa-solid fa-map-location-dot"></i> Đặc sản ${NF_UI.escapeHtml(data.specialty)}
+              </div>
+            ` : ''}
           </div>
           <div style="text-align:right;">
             <div class="result-card__calories">${scaled.calories}</div>

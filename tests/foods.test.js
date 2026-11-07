@@ -3,10 +3,16 @@ const assert = require('node:assert');
 const { load } = require('./load');
 const { NF_Foods, NF_FOODS_DATA } = load(['js/data/foods.js', 'js/foods.js'], ['NF_Foods', 'NF_FOODS_DATA']);
 
-test('CSDL có 68 món, không trùng khóa sau chuẩn hóa', () => {
-  assert.strictEqual(NF_FOODS_DATA.length, 68);
+test('CSDL có 304 món, không trùng khóa sau chuẩn hóa', () => {
+  assert.strictEqual(NF_FOODS_DATA.length, 304);
   const keys = NF_FOODS_DATA.map((f) => NF_Foods.normalize(f.name));
   assert.strictEqual(new Set(keys).size, keys.length);
+});
+
+test('món đặc sản vùng miền có trường specialty theo ĐVHC mới; món phổ quát để trống', () => {
+  assert.strictEqual(NF_Foods.find('Bún bò Huế')?.specialty, 'Huế');
+  assert.strictEqual(NF_Foods.find('Bánh canh Trảng Bàng')?.specialty, 'Tây Ninh');
+  assert.strictEqual(NF_Foods.find('Phở gà')?.specialty, '');
 });
 
 test('khớp đúng tên, bất kể hoa/thường, khoảng trắng, dấu', () => {
@@ -18,7 +24,7 @@ test('khớp đúng tên, bất kể hoa/thường, khoảng trắng, dấu', ()
 });
 
 test('không khớp một phần / gần đúng → null (đi theo AI)', () => {
-  for (const q of ['Phở bò tái', 'Cơm', 'phở', 'Trà sữa trân châu', 'Cơm trắng nhiều', 'Bún', '', '   ', null, undefined]) {
+  for (const q of ['Phở bò tái sốt vang', 'Cơm', 'phở', 'Trà sữa trân châu', 'Cơm trắng nhiều', 'Bún', '', '   ', null, undefined]) {
     assert.strictEqual(NF_Foods.find(q), null, String(q));
   }
 });

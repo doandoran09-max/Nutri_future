@@ -1,0 +1,502 @@
+diff --git a/js/data/foods.js b/js/data/foods.js
+index cc313fd..04c5d0d 100644
+--- a/js/data/foods.js
++++ b/js/data/foods.js
+@@ -1,75 +1,313 @@
+ /**
+  * NutriFuture — CSDL dinh dưỡng nội bộ (ẨN: không hiển thị ở bất kỳ đâu trên giao diện).
+- * Sinh tự động từ bảng trong plan.docx bằng tools/build-foods.py — KHÔNG sửa tay số liệu ở đây,
+- * hãy sửa nguồn rồi chạy lại. Chỉ chứa dữ liệu; logic khớp tên nằm ở js/foods.js.
++ * Sinh tự động bằng tools/build-foods.py từ bảng 252 món (đặc sản vùng miền) + các món
++ * nguyên liệu/cơ bản còn giữ lại từ CSDL cũ — KHÔNG sửa tay số liệu ở đây, hãy sửa nguồn
++ * rồi chạy lại. "specialty": tên tỉnh/thành theo 34 ĐVHC mới (2025); "" = món phổ biến
++ * khắp cả nước, không gắn với một địa phương cụ thể.
+  */
+ const NF_FOODS_DATA = [
+-  {"name": "Cơm trắng", "serving": "1 bát (200g)", "calories": 345, "protein": 7.9, "fat": 1.0, "carb": 75.9, "group": "Tinh bột", "category": "starch", "tags": []},
+-  {"name": "Bún tươi", "serving": "1 bát (150g)", "calories": 165, "protein": 5.1, "fat": 0.3, "carb": 38.3, "group": "Tinh bột", "category": "starch", "tags": []},
+-  {"name": "Bánh mì", "serving": "1 ổ (100g)", "calories": 265, "protein": 9.0, "fat": 3.2, "carb": 51.0, "group": "Tinh bột", "category": "starch", "tags": []},
+-  {"name": "Xôi", "serving": "1 gói (150g)", "calories": 300, "protein": 6.0, "fat": 1.5, "carb": 65.0, "group": "Tinh bột", "category": "starch", "tags": []},
+-  {"name": "Khoai lang luộc", "serving": "1 củ (150g)", "calories": 173, "protein": 2.4, "fat": 0.3, "carb": 40.0, "group": "Tinh bột", "category": "starch", "tags": []},
+-  {"name": "Mì Omachi", "serving": "1 gói (80g)", "calories": 340, "protein": 9.0, "fat": 10.0, "carb": 55.0, "group": "Tinh bột", "category": "starch", "tags": []},
+-  {"name": "Mì Hảo Hảo", "serving": "1 gói (75g)", "calories": 350, "protein": 8.0, "fat": 15.0, "carb": 45.0, "group": "Tinh bột", "category": "starch", "tags": []},
+-  {"name": "Mì Kokomi", "serving": "1 gói (80g)", "calories": 360, "protein": 9.0, "fat": 14.0, "carb": 50.0, "group": "Tinh bột", "category": "starch", "tags": []},
+-  {"name": "Thịt gà luộc", "serving": "100g", "calories": 165, "protein": 31.0, "fat": 3.6, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": []},
+-  {"name": "Thịt heo nạc", "serving": "100g", "calories": 139, "protein": 19.0, "fat": 7.0, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": []},
+-  {"name": "Thịt bò nạc", "serving": "100g", "calories": 118, "protein": 21.0, "fat": 3.8, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": []},
+-  {"name": "Cá hồi", "serving": "100g", "calories": 208, "protein": 20.0, "fat": 13.0, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": []},
+-  {"name": "Cá lóc", "serving": "100g", "calories": 95, "protein": 18.0, "fat": 1.7, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": []},
+-  {"name": "Tôm tươi", "serving": "100g", "calories": 90, "protein": 18.0, "fat": 1.5, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": []},
+-  {"name": "Trứng gà", "serving": "1 quả (50g)", "calories": 78, "protein": 6.5, "fat": 5.5, "carb": 0.5, "group": "Đạm động vật", "category": "protein", "tags": []},
+-  {"name": "Trứng vịt", "serving": "1 quả (70g)", "calories": 130, "protein": 9.0, "fat": 9.5, "carb": 0.7, "group": "Đạm động vật", "category": "protein", "tags": []},
+-  {"name": "Rau muống luộc", "serving": "100g", "calories": 23, "protein": 3.2, "fat": 0.2, "carb": 2.0, "group": "Rau củ", "category": "veg", "tags": ["veg"]},
+-  {"name": "Cải xanh luộc", "serving": "100g", "calories": 25, "protein": 2.0, "fat": 0.3, "carb": 3.0, "group": "Rau củ", "category": "veg", "tags": ["veg"]},
+-  {"name": "Bắp cải luộc", "serving": "100g", "calories": 27, "protein": 1.8, "fat": 0.1, "carb": 5.4, "group": "Rau củ", "category": "veg", "tags": ["veg"]},
+-  {"name": "Cà rốt", "serving": "100g", "calories": 41, "protein": 0.9, "fat": 0.2, "carb": 9.6, "group": "Rau củ", "category": "veg", "tags": ["veg"]},
+-  {"name": "Cà chua", "serving": "100g", "calories": 18, "protein": 0.9, "fat": 0.2, "carb": 3.9, "group": "Rau củ", "category": "veg", "tags": ["veg"]},
+-  {"name": "Dưa leo", "serving": "100g", "calories": 15, "protein": 0.7, "fat": 0.1, "carb": 3.6, "group": "Rau củ", "category": "veg", "tags": ["veg"]},
+-  {"name": "Chuối", "serving": "1 quả (100g)", "calories": 89, "protein": 1.1, "fat": 0.3, "carb": 22.8, "group": "Trái cây", "category": "fruit", "tags": ["fruit"]},
+-  {"name": "Cam", "serving": "1 quả (150g)", "calories": 71, "protein": 1.4, "fat": 0.2, "carb": 17.6, "group": "Trái cây", "category": "fruit", "tags": ["fruit"]},
+-  {"name": "Táo", "serving": "1 quả (150g)", "calories": 78, "protein": 0.4, "fat": 0.3, "carb": 20.7, "group": "Trái cây", "category": "fruit", "tags": ["fruit"]},
+-  {"name": "Xoài", "serving": "1 quả (200g)", "calories": 120, "protein": 1.0, "fat": 0.6, "carb": 30.0, "group": "Trái cây", "category": "fruit", "tags": ["fruit"]},
+-  {"name": "Đu đủ", "serving": "100g", "calories": 43, "protein": 0.5, "fat": 0.1, "carb": 10.8, "group": "Trái cây", "category": "fruit", "tags": ["fruit"]},
+-  {"name": "Dưa hấu", "serving": "100g", "calories": 30, "protein": 0.6, "fat": 0.1, "carb": 7.6, "group": "Trái cây", "category": "fruit", "tags": ["fruit"]},
+-  {"name": "Sữa tươi", "serving": "1 hộp (180ml)", "calories": 120, "protein": 8.0, "fat": 5.0, "carb": 12.0, "group": "Sữa và chế phẩm từ sữa", "category": "dairy", "tags": []},
+-  {"name": "Sữa chua", "serving": "1 hộp (100g)", "calories": 75, "protein": 3.5, "fat": 2.5, "carb": 9.5, "group": "Sữa và chế phẩm từ sữa", "category": "dairy", "tags": []},
+-  {"name": "Phô mai", "serving": "1 miếng (20g)", "calories": 70, "protein": 4.5, "fat": 5.5, "carb": 0.5, "group": "Sữa và chế phẩm từ sữa", "category": "dairy", "tags": []},
+-  {"name": "Phở bò", "serving": "1 bát (500g)", "calories": 413, "protein": 21.0, "fat": 12.0, "carb": 55.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Phở gà", "serving": "1 bát (500g)", "calories": 483, "protein": 25.0, "fat": 15.0, "carb": 58.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Bún chả", "serving": "1 suất (350g)", "calories": 385, "protein": 20.0, "fat": 14.0, "carb": 45.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Bún mọc", "serving": "1 bát (500g)", "calories": 514, "protein": 25.0, "fat": 18.0, "carb": 60.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Hủ tiếu Nam Vang", "serving": "1 bát (500g)", "calories": 400, "protein": 20.0, "fat": 12.0, "carb": 52.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Miến gà", "serving": "1 bát (500g)", "calories": 635, "protein": 28.0, "fat": 20.0, "carb": 80.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Bún bò Huế", "serving": "1 bát (500g)", "calories": 480, "protein": 20.0, "fat": 15.0, "carb": 62.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Bánh canh cua", "serving": "1 bát (500g)", "calories": 450, "protein": 18.0, "fat": 12.0, "carb": 68.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Mì Quảng", "serving": "1 bát (400g)", "calories": 400, "protein": 15.0, "fat": 10.0, "carb": 60.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Mì bò kho", "serving": "1 bát (500g)", "calories": 520, "protein": 22.0, "fat": 18.0, "carb": 65.0, "group": "Món nước", "category": "dish", "tags": []},
+-  {"name": "Gà rán", "serving": "1 miếng (100g)", "calories": 320, "protein": 22.0, "fat": 20.0, "carb": 12.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Khoai tây chiên", "serving": "1 gói (100g)", "calories": 312, "protein": 3.4, "fat": 15.0, "carb": 41.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Hamburger", "serving": "1 cái (200g)", "calories": 450, "protein": 22.0, "fat": 25.0, "carb": 38.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Hotdog", "serving": "1 cái (150g)", "calories": 290, "protein": 10.0, "fat": 17.0, "carb": 22.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Xúc xích chiên", "serving": "1 cây (50g)", "calories": 150, "protein": 6.0, "fat": 12.0, "carb": 4.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Cá viên chiên", "serving": "1 phần (100g)", "calories": 220, "protein": 12.0, "fat": 12.0, "carb": 18.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Tokbokki", "serving": "1 suất (200g)", "calories": 350, "protein": 6.0, "fat": 8.0, "carb": 65.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Bánh tráng trộn", "serving": "1 phần (100g)", "calories": 300, "protein": 5.0, "fat": 12.0, "carb": 42.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Bánh tráng nướng", "serving": "1 cái (80g)", "calories": 250, "protein": 6.0, "fat": 10.0, "carb": 35.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Bắp rang bơ", "serving": "1 gói (100g)", "calories": 387, "protein": 5.0, "fat": 15.0, "carb": 57.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": []},
+-  {"name": "Trà sữa trân châu (size M)", "serving": "1 ly (500ml)", "calories": 450, "protein": 5.0, "fat": 12.0, "carb": 78.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà sữa trân châu (size L)", "serving": "1 ly (700ml)", "calories": 630, "protein": 7.0, "fat": 17.0, "carb": 110.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà sữa không trân châu", "serving": "1 ly (500ml)", "calories": 300, "protein": 4.0, "fat": 10.0, "carb": 50.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà sữa Thái xanh", "serving": "1 ly (500ml)", "calories": 420, "protein": 4.5, "fat": 11.0, "carb": 72.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà sữa Matcha", "serving": "1 ly (500ml)", "calories": 400, "protein": 4.0, "fat": 10.0, "carb": 70.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà sữa khoai môn", "serving": "1 ly (500ml)", "calories": 430, "protein": 4.5, "fat": 11.0, "carb": 75.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà sữa ô long", "serving": "1 ly (500ml)", "calories": 380, "protein": 4.0, "fat": 10.0, "carb": 65.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà đào cam sả", "serving": "1 ly (500ml)", "calories": 150, "protein": 0.5, "fat": 0.2, "carb": 37.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà chanh", "serving": "1 ly (500ml)", "calories": 80, "protein": 0.0, "fat": 0.0, "carb": 20.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Trà xanh không đường", "serving": "1 ly (500ml)", "calories": 5, "protein": 0.0, "fat": 0.0, "carb": 1.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Nước ngọt có ga", "serving": "1 lon (330ml)", "calories": 140, "protein": 0.0, "fat": 0.0, "carb": 35.0, "group": "Đồ uống", "category": "drink", "tags": []},
+-  {"name": "Mì cay Hàn Quốc (ly vừa)", "serving": "1 ly (500g)", "calories": 550, "protein": 15.0, "fat": 18.0, "carb": 80.0, "group": "Mì cay", "category": "dish", "tags": []},
+-  {"name": "Mì cay cấp độ 1-2", "serving": "1 ly (450g)", "calories": 480, "protein": 13.0, "fat": 15.0, "carb": 72.0, "group": "Mì cay", "category": "dish", "tags": []},
+-  {"name": "Mì cay cấp độ 3-4", "serving": "1 ly (500g)", "calories": 600, "protein": 16.0, "fat": 20.0, "carb": 85.0, "group": "Mì cay", "category": "dish", "tags": []},
+-  {"name": "Mì cay cấp độ 5-6", "serving": "1 ly (550g)", "calories": 700, "protein": 18.0, "fat": 24.0, "carb": 95.0, "group": "Mì cay", "category": "dish", "tags": []},
+-  {"name": "Mì trộn cay (Buldak)", "serving": "1 gói (140g)", "calories": 530, "protein": 10.0, "fat": 18.0, "carb": 82.0, "group": "Mì cay", "category": "dish", "tags": []},
+-  {"name": "Mì cay Tokbokki", "serving": "1 suất (300g)", "calories": 420, "protein": 8.0, "fat": 10.0, "carb": 75.0, "group": "Mì cay", "category": "dish", "tags": []},
++  {"name": "Phở bò tái", "serving": "1 tô (450g)", "calories": 430, "protein": 26.0, "fat": 12.0, "carb": 54.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Phở bò chín", "serving": "1 tô (450g)", "calories": 450, "protein": 28.0, "fat": 13.0, "carb": 55.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Phở gà", "serving": "1 tô (450g)", "calories": 410, "protein": 25.0, "fat": 10.0, "carb": 53.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bún chả Hà Nội", "serving": "1 suất (400g)", "calories": 520, "protein": 27.0, "fat": 22.0, "carb": 52.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bún thang", "serving": "1 tô (400g)", "calories": 390, "protein": 22.0, "fat": 10.0, "carb": 50.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bún riêu cua", "serving": "1 tô (450g)", "calories": 420, "protein": 22.0, "fat": 12.0, "carb": 55.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bún ốc", "serving": "1 tô (450g)", "calories": 390, "protein": 18.0, "fat": 9.0, "carb": 57.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bún mọc", "serving": "1 tô (450g)", "calories": 410, "protein": 23.0, "fat": 11.0, "carb": 52.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Miến gà", "serving": "1 tô (400g)", "calories": 360, "protein": 24.0, "fat": 8.0, "carb": 48.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Miến lươn", "serving": "1 tô (400g)", "calories": 430, "protein": 25.0, "fat": 15.0, "carb": 48.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Nghệ An"},
++  {"name": "Bánh cuốn nhân thịt", "serving": "1 đĩa (250g)", "calories": 350, "protein": 14.0, "fat": 10.0, "carb": 50.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Bánh đa cua Hải Phòng", "serving": "1 tô (450g)", "calories": 440, "protein": 23.0, "fat": 13.0, "carb": 57.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hải Phòng"},
++  {"name": "Bánh đa cá", "serving": "1 tô (450g)", "calories": 410, "protein": 24.0, "fat": 9.0, "carb": 55.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bánh mì que Hải Phòng", "serving": "2 chiếc (120g)", "calories": 330, "protein": 10.0, "fat": 12.0, "carb": 46.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Hải Phòng"},
++  {"name": "Bún cá rô đồng", "serving": "1 tô (450g)", "calories": 400, "protein": 24.0, "fat": 10.0, "carb": 52.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Chả cá Lã Vọng", "serving": "1 suất (250g)", "calories": 460, "protein": 28.0, "fat": 30.0, "carb": 18.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Nem rán", "serving": "2 chiếc (100g)", "calories": 290, "protein": 10.0, "fat": 19.0, "carb": 19.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Thịt đông", "serving": "1 bát (180g)", "calories": 280, "protein": 19.0, "fat": 20.0, "carb": 4.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Thịt kho trứng", "serving": "1 phần (220g)", "calories": 390, "protein": 25.0, "fat": 27.0, "carb": 10.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Cá kho riềng", "serving": "1 phần (180g)", "calories": 240, "protein": 25.0, "fat": 13.0, "carb": 7.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Canh cua rau đay mồng tơi", "serving": "1 bát (300g)", "calories": 110, "protein": 10.0, "fat": 5.0, "carb": 8.0, "group": "Canh", "category": "soup_veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Canh cá nấu chua", "serving": "1 bát (300g)", "calories": 150, "protein": 18.0, "fat": 5.0, "carb": 8.0, "group": "Canh", "category": "soup_veg", "tags": [], "specialty": ""},
++  {"name": "Rau muống luộc", "serving": "1 đĩa (150g)", "calories": 45, "protein": 3.0, "fat": 0.5, "carb": 8.0, "group": "Rau củ", "category": "veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Rau cải luộc", "serving": "1 đĩa (150g)", "calories": 40, "protein": 3.0, "fat": 0.4, "carb": 7.0, "group": "Rau củ", "category": "veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Đậu phụ sốt cà chua", "serving": "1 phần (180g)", "calories": 190, "protein": 12.0, "fat": 11.0, "carb": 12.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Nem cua bể", "serving": "1 chiếc (150g)", "calories": 360, "protein": 18.0, "fat": 23.0, "carb": 22.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hải Phòng"},
++  {"name": "Bánh tôm Hồ Tây", "serving": "3 chiếc (150g)", "calories": 380, "protein": 12.0, "fat": 22.0, "carb": 34.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bánh chưng", "serving": "1 miếng (150g)", "calories": 510, "protein": 12.0, "fat": 20.0, "carb": 70.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Xôi xéo", "serving": "1 gói (200g)", "calories": 460, "protein": 11.0, "fat": 15.0, "carb": 69.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Xôi khúc", "serving": "1 chiếc (150g)", "calories": 390, "protein": 9.0, "fat": 13.0, "carb": 58.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bánh giò", "serving": "1 chiếc (180g)", "calories": 330, "protein": 10.0, "fat": 12.0, "carb": 45.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Bánh đúc nóng", "serving": "1 bát (300g)", "calories": 300, "protein": 10.0, "fat": 12.0, "carb": 38.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bánh gối", "serving": "1 chiếc (120g)", "calories": 330, "protein": 9.0, "fat": 19.0, "carb": 32.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bánh cuốn chả", "serving": "1 suất (300g)", "calories": 430, "protein": 19.0, "fat": 15.0, "carb": 54.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Bún đậu mắm tôm", "serving": "1 suất (400g)", "calories": 600, "protein": 27.0, "fat": 32.0, "carb": 48.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bún giả cầy", "serving": "1 tô (450g)", "calories": 520, "protein": 27.0, "fat": 24.0, "carb": 48.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bún bung", "serving": "1 tô (450g)", "calories": 430, "protein": 22.0, "fat": 14.0, "carb": 54.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Cháo sườn", "serving": "1 bát (350g)", "calories": 250, "protein": 10.0, "fat": 7.0, "carb": 36.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Cháo trai", "serving": "1 bát (350g)", "calories": 230, "protein": 12.0, "fat": 5.0, "carb": 34.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Cháo lòng", "serving": "1 bát (350g)", "calories": 330, "protein": 17.0, "fat": 13.0, "carb": 36.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Cơm rang dưa bò", "serving": "1 đĩa (350g)", "calories": 560, "protein": 22.0, "fat": 20.0, "carb": 70.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": ""},
++  {"name": "Cơm tám chả lá lốt", "serving": "1 suất (400g)", "calories": 590, "protein": 25.0, "fat": 21.0, "carb": 75.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": ""},
++  {"name": "Cá rô đồng kho tộ", "serving": "1 phần (180g)", "calories": 250, "protein": 26.0, "fat": 14.0, "carb": 5.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Gà luộc", "serving": "1 phần (150g)", "calories": 280, "protein": 35.0, "fat": 15.0, "carb": 0.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Thịt luộc cà pháo mắm tôm", "serving": "1 suất (250g)", "calories": 430, "protein": 25.0, "fat": 28.0, "carb": 14.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Sườn xào chua ngọt", "serving": "1 phần (180g)", "calories": 360, "protein": 23.0, "fat": 22.0, "carb": 18.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Chả lá lốt", "serving": "4 miếng (160g)", "calories": 340, "protein": 20.0, "fat": 25.0, "carb": 8.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Ốc luộc", "serving": "1 đĩa (200g thịt)", "calories": 190, "protein": 28.0, "fat": 3.0, "carb": 12.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Nộm hoa chuối", "serving": "1 đĩa (200g)", "calories": 160, "protein": 5.0, "fat": 8.0, "carb": 19.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": ""},
++  {"name": "Nộm bò khô", "serving": "1 đĩa (180g)", "calories": 250, "protein": 18.0, "fat": 11.0, "carb": 20.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Gỏi cuốn kiểu Bắc", "serving": "3 cuốn (180g)", "calories": 260, "protein": 13.0, "fat": 7.0, "carb": 36.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": ""},
++  {"name": "Bánh cốm", "serving": "1 chiếc (60g)", "calories": 190, "protein": 3.0, "fat": 4.0, "carb": 36.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Cốm xào", "serving": "1 phần (100g)", "calories": 230, "protein": 4.0, "fat": 7.0, "carb": 38.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Chè sen long nhãn", "serving": "1 bát (200g)", "calories": 180, "protein": 4.0, "fat": 2.0, "carb": 39.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Hưng Yên"},
++  {"name": "Chè kho", "serving": "1 phần (100g)", "calories": 250, "protein": 5.0, "fat": 7.0, "carb": 42.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Sữa chua nếp cẩm", "serving": "1 cốc (180g)", "calories": 210, "protein": 6.0, "fat": 5.0, "carb": 35.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Bánh khảo", "serving": "1 chiếc (70g)", "calories": 260, "protein": 5.0, "fat": 8.0, "carb": 42.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": "Cao Bằng"},
++  {"name": "Bánh đậu xanh Hải Dương", "serving": "1 phần (50g)", "calories": 220, "protein": 4.0, "fat": 9.0, "carb": 31.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": "Hải Phòng"},
++  {"name": "Bánh phu thê", "serving": "1 chiếc (80g)", "calories": 210, "protein": 3.0, "fat": 4.0, "carb": 42.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": "Bắc Ninh"},
++  {"name": "Bánh tro mật", "serving": "1 chiếc (100g)", "calories": 180, "protein": 2.0, "fat": 1.0, "carb": 42.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bánh khúc", "serving": "1 chiếc (150g)", "calories": 390, "protein": 9.0, "fat": 13.0, "carb": 58.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Hà Nội"},
++  {"name": "Nem chua Thanh Hóa", "serving": "2 chiếc (100g)", "calories": 160, "protein": 16.0, "fat": 8.0, "carb": 5.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Thanh Hóa"},
++  {"name": "Gà tần thuốc bắc", "serving": "1 bát (350g)", "calories": 420, "protein": 38.0, "fat": 25.0, "carb": 8.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Lẩu riêu cua bắp bò", "serving": "1 phần (500g)", "calories": 520, "protein": 32.0, "fat": 24.0, "carb": 42.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Lẩu gà lá é kiểu Bắc", "serving": "1 phần (500g)", "calories": 460, "protein": 35.0, "fat": 18.0, "carb": 38.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bún sườn chua", "serving": "1 tô (450g)", "calories": 420, "protein": 22.0, "fat": 12.0, "carb": 55.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bánh mì pate", "serving": "1 ổ (150g)", "calories": 420, "protein": 14.0, "fat": 19.0, "carb": 48.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bánh mì trứng", "serving": "1 ổ (150g)", "calories": 390, "protein": 15.0, "fat": 14.0, "carb": 48.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Khoai lang nướng", "serving": "1 củ (150g)", "calories": 173, "protein": 2.4, "fat": 0.3, "carb": 40.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bún bò Huế", "serving": "1 tô (450g)", "calories": 480, "protein": 28.0, "fat": 17.0, "carb": 54.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Huế"},
++  {"name": "Mì Quảng gà", "serving": "1 tô (400g)", "calories": 500, "protein": 27.0, "fat": 18.0, "carb": 57.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Mì Quảng tôm thịt", "serving": "1 tô (400g)", "calories": 520, "protein": 25.0, "fat": 20.0, "carb": 58.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Cao lầu Hội An", "serving": "1 tô (400g)", "calories": 490, "protein": 24.0, "fat": 18.0, "carb": 56.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Bánh bèo chén", "serving": "6 chén (240g)", "calories": 300, "protein": 8.0, "fat": 10.0, "carb": 44.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Huế"},
++  {"name": "Bánh nậm", "serving": "3 chiếc (180g)", "calories": 270, "protein": 9.0, "fat": 8.0, "carb": 40.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Huế"},
++  {"name": "Bánh lọc tôm thịt", "serving": "5 chiếc (200g)", "calories": 330, "protein": 12.0, "fat": 10.0, "carb": 48.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Huế"},
++  {"name": "Bánh ram ít", "serving": "4 chiếc (180g)", "calories": 360, "protein": 9.0, "fat": 14.0, "carb": 49.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Huế"},
++  {"name": "Bánh canh cá lóc", "serving": "1 tô (450g)", "calories": 430, "protein": 27.0, "fat": 10.0, "carb": 58.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bánh canh Nam Phổ", "serving": "1 tô (400g)", "calories": 390, "protein": 19.0, "fat": 12.0, "carb": 49.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Huế"},
++  {"name": "Bún hến", "serving": "1 tô (400g)", "calories": 360, "protein": 19.0, "fat": 8.0, "carb": 52.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Huế"},
++  {"name": "Cơm hến", "serving": "1 tô (350g)", "calories": 390, "protein": 18.0, "fat": 10.0, "carb": 57.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": "Huế"},
++  {"name": "Cháo lươn Nghệ An", "serving": "1 bát (350g)", "calories": 330, "protein": 20.0, "fat": 10.0, "carb": 40.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Nghệ An"},
++  {"name": "Súp lươn", "serving": "1 bát (300g)", "calories": 250, "protein": 18.0, "fat": 9.0, "carb": 25.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Nghệ An"},
++  {"name": "Bún cá Nha Trang", "serving": "1 tô (450g)", "calories": 410, "protein": 25.0, "fat": 9.0, "carb": 56.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Khánh Hòa"},
++  {"name": "Bún sứa", "serving": "1 tô (450g)", "calories": 380, "protein": 23.0, "fat": 7.0, "carb": 55.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Khánh Hòa"},
++  {"name": "Bánh căn trứng", "serving": "6 cái (240g)", "calories": 390, "protein": 15.0, "fat": 16.0, "carb": 46.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Khánh Hòa"},
++  {"name": "Bánh xèo miền Trung", "serving": "2 cái nhỏ (220g)", "calories": 430, "protein": 17.0, "fat": 22.0, "carb": 42.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Bánh khoái Huế", "serving": "1 chiếc (200g)", "calories": 420, "protein": 16.0, "fat": 23.0, "carb": 38.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Huế"},
++  {"name": "Nem lụi", "serving": "5 cây (200g)", "calories": 390, "protein": 25.0, "fat": 25.0, "carb": 15.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Huế"},
++  {"name": "Bò né", "serving": "1 suất (300g)", "calories": 480, "protein": 32.0, "fat": 28.0, "carb": 20.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Lâm Đồng"},
++  {"name": "Cơm gà Hội An", "serving": "1 đĩa (350g)", "calories": 560, "protein": 30.0, "fat": 18.0, "carb": 68.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Cơm âm phủ Huế", "serving": "1 đĩa (350g)", "calories": 520, "protein": 22.0, "fat": 18.0, "carb": 65.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": "Huế"},
++  {"name": "Cơm hến trộn", "serving": "1 phần (350g)", "calories": 400, "protein": 18.0, "fat": 11.0, "carb": 57.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": "Huế"},
++  {"name": "Ram cuốn cải", "serving": "4 cuốn (180g)", "calories": 350, "protein": 13.0, "fat": 18.0, "carb": 34.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Bánh tráng cuốn thịt heo", "serving": "1 suất (350g)", "calories": 470, "protein": 25.0, "fat": 17.0, "carb": 52.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Gỏi cá Nam Ô", "serving": "1 phần (200g)", "calories": 260, "protein": 27.0, "fat": 10.0, "carb": 13.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Mực rim me", "serving": "1 phần (120g)", "calories": 220, "protein": 20.0, "fat": 9.0, "carb": 14.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Cá nục kho", "serving": "1 phần (180g)", "calories": 260, "protein": 24.0, "fat": 16.0, "carb": 5.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Cá hấp cuốn bánh tráng", "serving": "1 suất (300g)", "calories": 350, "protein": 30.0, "fat": 10.0, "carb": 35.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Tôm chua Huế", "serving": "1 phần (80g)", "calories": 90, "protein": 8.0, "fat": 2.0, "carb": 10.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Huế"},
++  {"name": "Thịt luộc mắm ruốc", "serving": "1 phần (200g)", "calories": 390, "protein": 23.0, "fat": 27.0, "carb": 12.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Huế"},
++  {"name": "Gà nướng sả", "serving": "1 phần (180g)", "calories": 330, "protein": 34.0, "fat": 19.0, "carb": 4.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bê thui Cầu Mống", "serving": "1 phần (180g)", "calories": 280, "protein": 32.0, "fat": 15.0, "carb": 2.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Lẩu thả Phan Thiết", "serving": "1 phần (500g)", "calories": 450, "protein": 28.0, "fat": 13.0, "carb": 54.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Lâm Đồng"},
++  {"name": "Bánh tráng nướng", "serving": "1 cái (120g)", "calories": 300, "protein": 10.0, "fat": 12.0, "carb": 38.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Lâm Đồng"},
++  {"name": "Bánh ép Huế", "serving": "3 cái (150g)", "calories": 280, "protein": 11.0, "fat": 10.0, "carb": 36.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Huế"},
++  {"name": "Bánh ít lá gai", "serving": "1 chiếc (100g)", "calories": 280, "protein": 4.0, "fat": 7.0, "carb": 50.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Gia Lai"},
++  {"name": "Bánh thuẫn", "serving": "3 chiếc (90g)", "calories": 300, "protein": 6.0, "fat": 10.0, "carb": 45.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Kẹo cu đơ", "serving": "1 thanh (50g)", "calories": 240, "protein": 7.0, "fat": 12.0, "carb": 27.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Hà Tĩnh"},
++  {"name": "Chè bắp Hội An", "serving": "1 bát (200g)", "calories": 190, "protein": 3.0, "fat": 3.0, "carb": 40.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Chè hạt sen", "serving": "1 bát (200g)", "calories": 180, "protein": 4.0, "fat": 2.0, "carb": 39.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Huế"},
++  {"name": "Chè đậu ván", "serving": "1 bát (200g)", "calories": 230, "protein": 7.0, "fat": 4.0, "carb": 42.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Huế"},
++  {"name": "Chè kê", "serving": "1 bát (200g)", "calories": 220, "protein": 5.0, "fat": 4.0, "carb": 42.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Huế"},
++  {"name": "Bánh đậu xanh trái cây", "serving": "1 phần (100g)", "calories": 260, "protein": 5.0, "fat": 8.0, "carb": 43.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Bánh pía mini", "serving": "1 chiếc (80g)", "calories": 330, "protein": 6.0, "fat": 15.0, "carb": 43.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Mắm ruốc xào thịt", "serving": "1 phần (100g)", "calories": 240, "protein": 14.0, "fat": 17.0, "carb": 8.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Huế"},
++  {"name": "Dưa món", "serving": "1 phần (100g)", "calories": 90, "protein": 2.0, "fat": 1.0, "carb": 18.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bún nghệ lòng", "serving": "1 tô (400g)", "calories": 430, "protein": 19.0, "fat": 16.0, "carb": 53.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Mì sứa", "serving": "1 tô (400g)", "calories": 390, "protein": 22.0, "fat": 8.0, "carb": 57.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bánh hỏi lòng heo", "serving": "1 suất (350g)", "calories": 480, "protein": 24.0, "fat": 20.0, "carb": 50.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Đắk Lắk"},
++  {"name": "Bánh hỏi thịt nướng", "serving": "1 suất (350g)", "calories": 510, "protein": 27.0, "fat": 20.0, "carb": 57.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Đắk Lắk"},
++  {"name": "Cơm cá ngừ kho", "serving": "1 suất (350g)", "calories": 520, "protein": 30.0, "fat": 14.0, "carb": 68.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": "Đắk Lắk"},
++  {"name": "Bún chả cá Đà Nẵng", "serving": "1 tô (450g)", "calories": 420, "protein": 25.0, "fat": 10.0, "carb": 56.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Bún mắm nêm", "serving": "1 tô (400g)", "calories": 470, "protein": 23.0, "fat": 17.0, "carb": 55.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Gỏi mít non", "serving": "1 đĩa (200g)", "calories": 190, "protein": 6.0, "fat": 9.0, "carb": 23.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Bánh ít ram", "serving": "2 chiếc (140g)", "calories": 320, "protein": 7.0, "fat": 12.0, "carb": 47.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Gia Lai"},
++  {"name": "Bánh tổ", "serving": "1 miếng (100g)", "calories": 300, "protein": 3.0, "fat": 4.0, "carb": 64.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Đà Nẵng"},
++  {"name": "Mè xửng Huế", "serving": "1 phần (50g)", "calories": 220, "protein": 5.0, "fat": 10.0, "carb": 27.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Huế"},
++  {"name": "Cơm tấm sườn bì chả", "serving": "1 đĩa (400g)", "calories": 650, "protein": 30.0, "fat": 25.0, "carb": 75.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Cơm tấm sườn nướng", "serving": "1 đĩa (380g)", "calories": 610, "protein": 29.0, "fat": 22.0, "carb": 72.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Cơm gà xối mỡ", "serving": "1 đĩa (380g)", "calories": 680, "protein": 31.0, "fat": 30.0, "carb": 72.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Cơm chiên dương châu", "serving": "1 đĩa (350g)", "calories": 560, "protein": 19.0, "fat": 18.0, "carb": 78.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": ""},
++  {"name": "Cơm cá kho tộ", "serving": "1 suất (400g)", "calories": 540, "protein": 28.0, "fat": 17.0, "carb": 67.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": ""},
++  {"name": "Cơm thịt kho trứng", "serving": "1 suất (400g)", "calories": 590, "protein": 27.0, "fat": 24.0, "carb": 70.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": ""},
++  {"name": "Cơm gà xé", "serving": "1 đĩa (350g)", "calories": 500, "protein": 27.0, "fat": 12.0, "carb": 68.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": ""},
++  {"name": "Cơm sườn non rim", "serving": "1 suất (400g)", "calories": 580, "protein": 28.0, "fat": 22.0, "carb": 69.0, "group": "Cơm", "category": "rice", "tags": [], "specialty": ""},
++  {"name": "Hủ tiếu Nam Vang", "serving": "1 tô (450g)", "calories": 450, "protein": 25.0, "fat": 12.0, "carb": 58.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Hủ tiếu Mỹ Tho", "serving": "1 tô (450g)", "calories": 430, "protein": 23.0, "fat": 10.0, "carb": 57.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Đồng Tháp"},
++  {"name": "Hủ tiếu Sa Đéc", "serving": "1 tô (450g)", "calories": 420, "protein": 22.0, "fat": 9.0, "carb": 56.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Đồng Tháp"},
++  {"name": "Bánh canh Trảng Bàng", "serving": "1 tô (450g)", "calories": 460, "protein": 25.0, "fat": 13.0, "carb": 58.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Tây Ninh"},
++  {"name": "Bánh canh cua", "serving": "1 tô (450g)", "calories": 490, "protein": 24.0, "fat": 17.0, "carb": 58.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bún mắm miền Tây", "serving": "1 tô (450g)", "calories": 520, "protein": 27.0, "fat": 18.0, "carb": 60.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bún nước lèo Sóc Trăng", "serving": "1 tô (450g)", "calories": 430, "protein": 23.0, "fat": 11.0, "carb": 56.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Cần Thơ"},
++  {"name": "Bún cá Châu Đốc", "serving": "1 tô (450g)", "calories": 410, "protein": 25.0, "fat": 9.0, "carb": 54.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "An Giang"},
++  {"name": "Bún riêu cua miền Tây", "serving": "1 tô (450g)", "calories": 430, "protein": 22.0, "fat": 13.0, "carb": 56.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bún thịt nướng", "serving": "1 tô (400g)", "calories": 520, "protein": 25.0, "fat": 18.0, "carb": 65.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bún nem nướng", "serving": "1 tô (400g)", "calories": 510, "protein": 24.0, "fat": 17.0, "carb": 64.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Khánh Hòa"},
++  {"name": "Bánh hỏi heo quay", "serving": "1 suất (350g)", "calories": 560, "protein": 25.0, "fat": 25.0, "carb": 55.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Bánh xèo miền Tây", "serving": "1 cái lớn (250g)", "calories": 520, "protein": 18.0, "fat": 27.0, "carb": 50.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Gỏi cuốn tôm thịt", "serving": "3 cuốn (180g)", "calories": 260, "protein": 15.0, "fat": 6.0, "carb": 38.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": ""},
++  {"name": "Bò bía mặn", "serving": "2 cuốn (160g)", "calories": 280, "protein": 10.0, "fat": 9.0, "carb": 39.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bánh mì thịt", "serving": "1 ổ (180g)", "calories": 480, "protein": 18.0, "fat": 19.0, "carb": 58.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Bánh mì phá lấu", "serving": "1 ổ (180g)", "calories": 520, "protein": 21.0, "fat": 22.0, "carb": 57.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Bánh tằm bì", "serving": "1 đĩa (350g)", "calories": 500, "protein": 17.0, "fat": 19.0, "carb": 66.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Cà Mau"},
++  {"name": "Bánh cống Sóc Trăng", "serving": "2 cái (180g)", "calories": 430, "protein": 14.0, "fat": 25.0, "carb": 38.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Cần Thơ"},
++  {"name": "Bánh khọt Vũng Tàu", "serving": "6 cái (180g)", "calories": 390, "protein": 13.0, "fat": 18.0, "carb": 43.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Bánh ít trần", "serving": "3 chiếc (180g)", "calories": 360, "protein": 9.0, "fat": 12.0, "carb": 52.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Bánh da lợn", "serving": "1 miếng (100g)", "calories": 280, "protein": 4.0, "fat": 8.0, "carb": 48.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Bánh bò hấp", "serving": "2 chiếc (120g)", "calories": 250, "protein": 4.0, "fat": 4.0, "carb": 50.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Bánh chuối hấp", "serving": "1 phần (150g)", "calories": 260, "protein": 3.0, "fat": 6.0, "carb": 50.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Bánh chuối nướng", "serving": "1 miếng (120g)", "calories": 290, "protein": 4.0, "fat": 8.0, "carb": 52.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Bánh tét nhân chuối", "serving": "1 khoanh (150g)", "calories": 330, "protein": 4.0, "fat": 8.0, "carb": 61.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bánh tét nhân đậu thịt", "serving": "1 khoanh (150g)", "calories": 420, "protein": 10.0, "fat": 16.0, "carb": 58.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Xôi mặn", "serving": "1 gói (200g)", "calories": 450, "protein": 13.0, "fat": 14.0, "carb": 67.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Xôi gà", "serving": "1 gói (200g)", "calories": 430, "protein": 17.0, "fat": 10.0, "carb": 66.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Cháo cá lóc", "serving": "1 bát (350g)", "calories": 280, "protein": 20.0, "fat": 6.0, "carb": 36.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Cháo vịt", "serving": "1 bát (350g)", "calories": 320, "protein": 21.0, "fat": 10.0, "carb": 38.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Lẩu mắm", "serving": "1 phần (500g)", "calories": 560, "protein": 32.0, "fat": 22.0, "carb": 54.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "An Giang"},
++  {"name": "Lẩu cá kèo", "serving": "1 phần (500g)", "calories": 420, "protein": 29.0, "fat": 12.0, "carb": 45.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": ""},
++  {"name": "Canh chua cá", "serving": "1 bát (300g)", "calories": 160, "protein": 18.0, "fat": 6.0, "carb": 10.0, "group": "Canh", "category": "soup_veg", "tags": [], "specialty": ""},
++  {"name": "Cá lóc nướng trui", "serving": "1 phần (180g)", "calories": 240, "protein": 34.0, "fat": 10.0, "carb": 1.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Cá tai tượng chiên xù", "serving": "1 phần (200g)", "calories": 430, "protein": 30.0, "fat": 28.0, "carb": 12.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Tôm rim nước dừa", "serving": "1 phần (150g)", "calories": 260, "protein": 23.0, "fat": 13.0, "carb": 12.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Thịt kho nước dừa", "serving": "1 phần (180g)", "calories": 390, "protein": 22.0, "fat": 28.0, "carb": 8.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Gà hấp lá chanh", "serving": "1 phần (180g)", "calories": 290, "protein": 35.0, "fat": 16.0, "carb": 1.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Vịt nấu chao", "serving": "1 phần (300g)", "calories": 420, "protein": 27.0, "fat": 25.0, "carb": 18.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bò lúc lắc", "serving": "1 phần (200g)", "calories": 360, "protein": 30.0, "fat": 22.0, "carb": 8.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Sườn nướng mật ong", "serving": "1 phần (180g)", "calories": 390, "protein": 27.0, "fat": 23.0, "carb": 16.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Đậu hũ chiên sả", "serving": "1 phần (150g)", "calories": 260, "protein": 14.0, "fat": 18.0, "carb": 10.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Gỏi ngó sen tôm thịt", "serving": "1 đĩa (200g)", "calories": 220, "protein": 16.0, "fat": 9.0, "carb": 20.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": ""},
++  {"name": "Gỏi gà bắp cải", "serving": "1 đĩa (200g)", "calories": 210, "protein": 22.0, "fat": 8.0, "carb": 12.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": ""},
++  {"name": "Gỏi xoài khô cá", "serving": "1 đĩa (180g)", "calories": 240, "protein": 15.0, "fat": 9.0, "carb": 25.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": ""},
++  {"name": "Gỏi củ hủ dừa", "serving": "1 đĩa (200g)", "calories": 190, "protein": 8.0, "fat": 8.0, "carb": 23.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": "Vĩnh Long"},
++  {"name": "Rau luộc kho quẹt", "serving": "1 phần (200g)", "calories": 180, "protein": 7.0, "fat": 11.0, "carb": 15.0, "group": "Rau củ", "category": "veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Bắp xào tép", "serving": "1 phần (180g)", "calories": 250, "protein": 9.0, "fat": 10.0, "carb": 34.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bánh tráng trộn", "serving": "1 phần (200g)", "calories": 380, "protein": 10.0, "fat": 16.0, "carb": 50.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Bánh tráng cuốn bơ", "serving": "1 phần (150g)", "calories": 350, "protein": 7.0, "fat": 18.0, "carb": 42.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Chè ba màu", "serving": "1 ly (250g)", "calories": 320, "protein": 6.0, "fat": 7.0, "carb": 58.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Chè đậu xanh nước cốt dừa", "serving": "1 bát (220g)", "calories": 280, "protein": 7.0, "fat": 9.0, "carb": 43.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Chè bà ba", "serving": "1 bát (250g)", "calories": 300, "protein": 5.0, "fat": 8.0, "carb": 53.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Chè chuối", "serving": "1 bát (220g)", "calories": 270, "protein": 3.0, "fat": 8.0, "carb": 48.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Sương sáo nước cốt dừa", "serving": "1 ly (220g)", "calories": 210, "protein": 3.0, "fat": 8.0, "carb": 32.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Rau câu dừa", "serving": "1 phần (150g)", "calories": 160, "protein": 2.0, "fat": 5.0, "carb": 27.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Vĩnh Long"},
++  {"name": "Chuối nếp nướng", "serving": "1 chiếc (150g)", "calories": 330, "protein": 4.0, "fat": 9.0, "carb": 58.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Bánh pía Sóc Trăng", "serving": "1 chiếc (100g)", "calories": 400, "protein": 7.0, "fat": 18.0, "carb": 53.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": "Cần Thơ"},
++  {"name": "Kẹo dừa Bến Tre", "serving": "1 phần (40g)", "calories": 170, "protein": 1.0, "fat": 7.0, "carb": 26.0, "group": "Chè & Tráng miệng", "category": "sweet", "tags": [], "specialty": "Vĩnh Long"},
++  {"name": "Bánh in đậu xanh", "serving": "1 chiếc (60g)", "calories": 230, "protein": 4.0, "fat": 7.0, "carb": 37.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": ""},
++  {"name": "Bánh tằm khoai mì", "serving": "1 phần (150g)", "calories": 280, "protein": 3.0, "fat": 6.0, "carb": 54.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": ""},
++  {"name": "Bánh ống lá dứa", "serving": "1 chiếc (100g)", "calories": 240, "protein": 4.0, "fat": 6.0, "carb": 43.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "Vĩnh Long"},
++  {"name": "Bánh bò thốt nốt", "serving": "1 miếng (120g)", "calories": 270, "protein": 4.0, "fat": 5.0, "carb": 53.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": "An Giang"},
++  {"name": "Bánh gừng", "serving": "3 chiếc (90g)", "calories": 310, "protein": 4.0, "fat": 12.0, "carb": 47.0, "group": "Bánh ngọt truyền thống", "category": "sweet", "tags": [], "specialty": "Vĩnh Long"},
++  {"name": "Bánh hẹ", "serving": "2 chiếc (150g)", "calories": 320, "protein": 8.0, "fat": 12.0, "carb": 45.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Khánh Hòa"},
++  {"name": "Gà rán sốt cay Hàn Quốc", "serving": "1 phần (200g)", "calories": 520, "protein": 30.0, "fat": 31.0, "carb": 32.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Tokbokki phô mai", "serving": "1 phần (250g)", "calories": 480, "protein": 13.0, "fat": 17.0, "carb": 66.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Kimbap chiên", "serving": "1 cuộn (220g)", "calories": 430, "protein": 14.0, "fat": 17.0, "carb": 45.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Hamburger bò phô mai", "serving": "1 cái (220g)", "calories": 540, "protein": 27.0, "fat": 29.0, "carb": 45.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Gà rán", "serving": "2 miếng vừa (200g)", "calories": 520, "protein": 32.0, "fat": 34.0, "carb": 24.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Pizza phô mai", "serving": "2 miếng (220g)", "calories": 560, "protein": 24.0, "fat": 22.0, "carb": 62.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Khoai tây chiên", "serving": "1 phần vừa (120g)", "calories": 370, "protein": 5.0, "fat": 18.0, "carb": 48.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Hot dog xúc xích", "serving": "1 cái (180g)", "calories": 430, "protein": 16.0, "fat": 24.0, "carb": 40.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Sandwich gà", "serving": "1 cái (200g)", "calories": 420, "protein": 25.0, "fat": 14.0, "carb": 48.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Cá viên chiên", "serving": "1 phần (150g)", "calories": 330, "protein": 16.0, "fat": 19.0, "carb": 25.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Xúc xích nướng", "serving": "2 cây (120g)", "calories": 360, "protein": 15.0, "fat": 30.0, "carb": 5.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Mì Ý sốt bò bằm", "serving": "1 đĩa (300g)", "calories": 510, "protein": 22.0, "fat": 16.0, "carb": 68.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Gà nuggets", "serving": "6 miếng (150g)", "calories": 410, "protein": 23.0, "fat": 25.0, "carb": 25.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Bánh mì sandwich jambon", "serving": "1 cái (180g)", "calories": 390, "protein": 18.0, "fat": 13.0, "carb": 50.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Taco bò", "serving": "2 chiếc (180g)", "calories": 400, "protein": 20.0, "fat": 18.0, "carb": 40.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Trà sữa trân châu đường đen", "serving": "1 ly (500ml)", "calories": 420, "protein": 6.0, "fat": 10.0, "carb": 78.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Matcha latte", "serving": "1 ly (400ml)", "calories": 240, "protein": 8.0, "fat": 9.0, "carb": 32.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa khoai môn", "serving": "1 ly (500ml)", "calories": 390, "protein": 5.0, "fat": 12.0, "carb": 65.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Cà phê muối", "serving": "1 ly (300ml)", "calories": 220, "protein": 4.0, "fat": 12.0, "carb": 24.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà xoài chanh dây", "serving": "1 ly (500ml)", "calories": 210, "protein": 1.0, "fat": 0.0, "carb": 52.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Matcha latte dừa", "serving": "1 ly (400ml)", "calories": 210, "protein": 4.0, "fat": 8.0, "carb": 32.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Milo dầm", "serving": "1 ly (450ml)", "calories": 430, "protein": 8.0, "fat": 14.0, "carb": 68.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Sữa chua uống trái cây", "serving": "1 chai (300ml)", "calories": 190, "protein": 6.0, "fat": 4.0, "carb": 32.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà đào cam sả", "serving": "1 ly (500ml)", "calories": 180, "protein": 1.0, "fat": 0.0, "carb": 44.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà ô lông kem cheesse", "serving": "1 ly (450ml)", "calories": 330, "protein": 5.0, "fat": 18.0, "carb": 38.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Cà phê sữa dừa", "serving": "1 ly (350ml)", "calories": 280, "protein": 3.0, "fat": 14.0, "carb": 34.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà dâu tằm", "serving": "1 ly (500ml)", "calories": 180, "protein": 1.0, "fat": 0.0, "carb": 45.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa ô lông", "serving": "1 ly (500ml)", "calories": 350, "protein": 5.0, "fat": 9.0, "carb": 62.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa matcha", "serving": "1 ly (500ml)", "calories": 380, "protein": 7.0, "fat": 11.0, "carb": 63.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa socola", "serving": "1 ly (500ml)", "calories": 400, "protein": 7.0, "fat": 12.0, "carb": 66.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa dâu", "serving": "1 ly (500ml)", "calories": 360, "protein": 5.0, "fat": 9.0, "carb": 64.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa pudding trứng", "serving": "1 ly (500ml)", "calories": 430, "protein": 7.0, "fat": 13.0, "carb": 70.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà vải", "serving": "1 ly (500ml)", "calories": 170, "protein": 0.0, "fat": 0.0, "carb": 43.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà chanh mật ong", "serving": "1 ly (450ml)", "calories": 150, "protein": 0.0, "fat": 0.0, "carb": 38.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà mãng cầu", "serving": "1 ly (500ml)", "calories": 220, "protein": 1.0, "fat": 0.0, "carb": 55.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà mận", "serving": "1 ly (500ml)", "calories": 190, "protein": 0.0, "fat": 0.0, "carb": 48.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Soda việt quất", "serving": "1 ly (400ml)", "calories": 160, "protein": 0.0, "fat": 0.0, "carb": 40.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Soda chanh dây", "serving": "1 ly (400ml)", "calories": 150, "protein": 0.0, "fat": 0.0, "carb": 38.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Soda dâu", "serving": "1 ly (400ml)", "calories": 170, "protein": 0.0, "fat": 0.0, "carb": 43.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Bạc xỉu", "serving": "1 ly (300ml)", "calories": 180, "protein": 4.0, "fat": 6.0, "carb": 27.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Sinh tố bơ", "serving": "1 ly (400ml)", "calories": 320, "protein": 5.0, "fat": 18.0, "carb": 36.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Nước ép cam", "serving": "1 ly (350ml)", "calories": 140, "protein": 2.0, "fat": 0.0, "carb": 32.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Bánh đồng xu phô mai", "serving": "1 cái (120g)", "calories": 350, "protein": 10.0, "fat": 17.0, "carb": 39.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Bánh tráng cuốn sốt bơ", "serving": "1 phần (200g)", "calories": 420, "protein": 9.0, "fat": 22.0, "carb": 48.0, "group": "Bánh mặn", "category": "savory_cake", "tags": [], "specialty": "Thành phố Hồ Chí Minh"},
++  {"name": "Bánh tráng nướng phô mai", "serving": "1 cái (150g)", "calories": 390, "protein": 12.0, "fat": 19.0, "carb": 42.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Gỏi cuốn", "serving": "3 cuốn (210g)", "calories": 300, "protein": 18.0, "fat": 7.0, "carb": 42.0, "group": "Gỏi & Nộm", "category": "salad", "tags": [], "specialty": ""},
++  {"name": "Nem nướng", "serving": "1 phần (250g)", "calories": 480, "protein": 22.0, "fat": 21.0, "carb": 50.0, "group": "Món mặn / Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Mỳ cay hải sản", "serving": "1 tô (600g)", "calories": 550, "protein": 25.0, "fat": 17.0, "carb": 72.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Bánh crepe sầu riêng", "serving": "1 cái (150g)", "calories": 380, "protein": 5.0, "fat": 20.0, "carb": 45.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Bánh mì chảo", "serving": "1 phần (350g)", "calories": 520, "protein": 23.0, "fat": 27.0, "carb": 46.0, "group": "Món nước", "category": "noodle_soup", "tags": [], "specialty": "Lâm Đồng"},
++  {"name": "Cơm trắng", "serving": "1 bát (200g)", "calories": 345, "protein": 7.9, "fat": 1.0, "carb": 75.9, "group": "Tinh bột", "category": "starch", "tags": [], "specialty": ""},
++  {"name": "Bún tươi", "serving": "1 bát (150g)", "calories": 165, "protein": 5.1, "fat": 0.3, "carb": 38.3, "group": "Tinh bột", "category": "starch", "tags": [], "specialty": ""},
++  {"name": "Bánh mì", "serving": "1 ổ (100g)", "calories": 265, "protein": 9.0, "fat": 3.2, "carb": 51.0, "group": "Tinh bột", "category": "starch", "tags": [], "specialty": ""},
++  {"name": "Xôi", "serving": "1 gói (150g)", "calories": 300, "protein": 6.0, "fat": 1.5, "carb": 65.0, "group": "Tinh bột", "category": "starch", "tags": [], "specialty": ""},
++  {"name": "Khoai lang luộc", "serving": "1 củ (150g)", "calories": 173, "protein": 2.4, "fat": 0.3, "carb": 40.0, "group": "Tinh bột", "category": "starch", "tags": [], "specialty": ""},
++  {"name": "Mì Omachi", "serving": "1 gói (80g)", "calories": 340, "protein": 9.0, "fat": 10.0, "carb": 55.0, "group": "Tinh bột", "category": "starch", "tags": [], "specialty": ""},
++  {"name": "Mì Hảo Hảo", "serving": "1 gói (75g)", "calories": 350, "protein": 8.0, "fat": 15.0, "carb": 45.0, "group": "Tinh bột", "category": "starch", "tags": [], "specialty": ""},
++  {"name": "Mì Kokomi", "serving": "1 gói (80g)", "calories": 360, "protein": 9.0, "fat": 14.0, "carb": 50.0, "group": "Tinh bột", "category": "starch", "tags": [], "specialty": ""},
++  {"name": "Thịt gà luộc", "serving": "100g", "calories": 165, "protein": 31.0, "fat": 3.6, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Thịt heo nạc", "serving": "100g", "calories": 139, "protein": 19.0, "fat": 7.0, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Thịt bò nạc", "serving": "100g", "calories": 118, "protein": 21.0, "fat": 3.8, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Cá hồi", "serving": "100g", "calories": 208, "protein": 20.0, "fat": 13.0, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Cá lóc", "serving": "100g", "calories": 95, "protein": 18.0, "fat": 1.7, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Tôm tươi", "serving": "100g", "calories": 90, "protein": 18.0, "fat": 1.5, "carb": 0.0, "group": "Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Trứng gà", "serving": "1 quả (50g)", "calories": 78, "protein": 6.5, "fat": 5.5, "carb": 0.5, "group": "Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Trứng vịt", "serving": "1 quả (70g)", "calories": 130, "protein": 9.0, "fat": 9.5, "carb": 0.7, "group": "Đạm động vật", "category": "protein", "tags": [], "specialty": ""},
++  {"name": "Cải xanh luộc", "serving": "100g", "calories": 25, "protein": 2.0, "fat": 0.3, "carb": 3.0, "group": "Rau củ", "category": "veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Bắp cải luộc", "serving": "100g", "calories": 27, "protein": 1.8, "fat": 0.1, "carb": 5.4, "group": "Rau củ", "category": "veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Cà rốt", "serving": "100g", "calories": 41, "protein": 0.9, "fat": 0.2, "carb": 9.6, "group": "Rau củ", "category": "veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Cà chua", "serving": "100g", "calories": 18, "protein": 0.9, "fat": 0.2, "carb": 3.9, "group": "Rau củ", "category": "veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Dưa leo", "serving": "100g", "calories": 15, "protein": 0.7, "fat": 0.1, "carb": 3.6, "group": "Rau củ", "category": "veg", "tags": ["veg"], "specialty": ""},
++  {"name": "Chuối", "serving": "1 quả (100g)", "calories": 89, "protein": 1.1, "fat": 0.3, "carb": 22.8, "group": "Trái cây", "category": "fruit", "tags": ["fruit"], "specialty": ""},
++  {"name": "Cam", "serving": "1 quả (150g)", "calories": 71, "protein": 1.4, "fat": 0.2, "carb": 17.6, "group": "Trái cây", "category": "fruit", "tags": ["fruit"], "specialty": ""},
++  {"name": "Táo", "serving": "1 quả (150g)", "calories": 78, "protein": 0.4, "fat": 0.3, "carb": 20.7, "group": "Trái cây", "category": "fruit", "tags": ["fruit"], "specialty": ""},
++  {"name": "Xoài", "serving": "1 quả (200g)", "calories": 120, "protein": 1.0, "fat": 0.6, "carb": 30.0, "group": "Trái cây", "category": "fruit", "tags": ["fruit"], "specialty": ""},
++  {"name": "Đu đủ", "serving": "100g", "calories": 43, "protein": 0.5, "fat": 0.1, "carb": 10.8, "group": "Trái cây", "category": "fruit", "tags": ["fruit"], "specialty": ""},
++  {"name": "Dưa hấu", "serving": "100g", "calories": 30, "protein": 0.6, "fat": 0.1, "carb": 7.6, "group": "Trái cây", "category": "fruit", "tags": ["fruit"], "specialty": ""},
++  {"name": "Sữa tươi", "serving": "1 hộp (180ml)", "calories": 120, "protein": 8.0, "fat": 5.0, "carb": 12.0, "group": "Sữa và chế phẩm từ sữa", "category": "dairy", "tags": [], "specialty": ""},
++  {"name": "Sữa chua", "serving": "1 hộp (100g)", "calories": 75, "protein": 3.5, "fat": 2.5, "carb": 9.5, "group": "Sữa và chế phẩm từ sữa", "category": "dairy", "tags": [], "specialty": ""},
++  {"name": "Phô mai", "serving": "1 miếng (20g)", "calories": 70, "protein": 4.5, "fat": 5.5, "carb": 0.5, "group": "Sữa và chế phẩm từ sữa", "category": "dairy", "tags": [], "specialty": ""},
++  {"name": "Phở bò", "serving": "1 bát (500g)", "calories": 413, "protein": 21.0, "fat": 12.0, "carb": 55.0, "group": "Món nước", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Bún chả", "serving": "1 suất (350g)", "calories": 385, "protein": 20.0, "fat": 14.0, "carb": 45.0, "group": "Món nước", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Mì Quảng", "serving": "1 bát (400g)", "calories": 400, "protein": 15.0, "fat": 10.0, "carb": 60.0, "group": "Món nước", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Mì bò kho", "serving": "1 bát (500g)", "calories": 520, "protein": 22.0, "fat": 18.0, "carb": 65.0, "group": "Món nước", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Hamburger", "serving": "1 cái (200g)", "calories": 450, "protein": 22.0, "fat": 25.0, "carb": 38.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Hotdog", "serving": "1 cái (150g)", "calories": 290, "protein": 10.0, "fat": 17.0, "carb": 22.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Xúc xích chiên", "serving": "1 cây (50g)", "calories": 150, "protein": 6.0, "fat": 12.0, "carb": 4.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Tokbokki", "serving": "1 suất (200g)", "calories": 350, "protein": 6.0, "fat": 8.0, "carb": 65.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Bắp rang bơ", "serving": "1 gói (100g)", "calories": 387, "protein": 5.0, "fat": 15.0, "carb": 57.0, "group": "Đồ ăn nhanh và ăn vặt", "category": "fastfood", "tags": [], "specialty": ""},
++  {"name": "Trà sữa trân châu (size M)", "serving": "1 ly (500ml)", "calories": 450, "protein": 5.0, "fat": 12.0, "carb": 78.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa trân châu (size L)", "serving": "1 ly (700ml)", "calories": 630, "protein": 7.0, "fat": 17.0, "carb": 110.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa không trân châu", "serving": "1 ly (500ml)", "calories": 300, "protein": 4.0, "fat": 10.0, "carb": 50.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà sữa Thái xanh", "serving": "1 ly (500ml)", "calories": 420, "protein": 4.5, "fat": 11.0, "carb": 72.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà chanh", "serving": "1 ly (500ml)", "calories": 80, "protein": 0.0, "fat": 0.0, "carb": 20.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Trà xanh không đường", "serving": "1 ly (500ml)", "calories": 5, "protein": 0.0, "fat": 0.0, "carb": 1.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Nước ngọt có ga", "serving": "1 lon (330ml)", "calories": 140, "protein": 0.0, "fat": 0.0, "carb": 35.0, "group": "Đồ uống", "category": "drink", "tags": [], "specialty": ""},
++  {"name": "Mì cay Hàn Quốc (ly vừa)", "serving": "1 ly (500g)", "calories": 550, "protein": 15.0, "fat": 18.0, "carb": 80.0, "group": "Mì cay", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Mì cay cấp độ 1-2", "serving": "1 ly (450g)", "calories": 480, "protein": 13.0, "fat": 15.0, "carb": 72.0, "group": "Mì cay", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Mì cay cấp độ 3-4", "serving": "1 ly (500g)", "calories": 600, "protein": 16.0, "fat": 20.0, "carb": 85.0, "group": "Mì cay", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Mì cay cấp độ 5-6", "serving": "1 ly (550g)", "calories": 700, "protein": 18.0, "fat": 24.0, "carb": 95.0, "group": "Mì cay", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Mì trộn cay (Buldak)", "serving": "1 gói (140g)", "calories": 530, "protein": 10.0, "fat": 18.0, "carb": 82.0, "group": "Mì cay", "category": "dish", "tags": [], "specialty": ""},
++  {"name": "Mì cay Tokbokki", "serving": "1 suất (300g)", "calories": 420, "protein": 8.0, "fat": 10.0, "carb": 75.0, "group": "Mì cay", "category": "dish", "tags": [], "specialty": ""},
+ ];
+diff --git a/js/pages/camera.js b/js/pages/camera.js
+index 54bdd54..ca9112c 100644
+--- a/js/pages/camera.js
++++ b/js/pages/camera.js
+@@ -390,6 +390,10 @@ const NF_PageCamera = (() => {
+ 
+     try {
+       const data = await NF_Gemini.analyzeImage(capturedBase64);
++      // Đối chiếu tên AI nhận diện với CSDL nội bộ: nếu khớp đúng, lấy thêm "đặc sản vùng miền"
++      // (số liệu dinh dưỡng vẫn giữ nguyên từ AI vì đây là ước tính từ ảnh thực tế, không phải khẩu phần chuẩn CSDL).
++      const dbHit = NF_Foods.find(data.name);
++      data.specialty = dbHit ? (dbHit.specialty || '') : '';
+       lastAnalysisResult = data;
+       scannerOverlay.classList.add('hidden');
+       currentPortionId = 'm'; // ảnh mới → về lại khẩu phần Vừa mặc định
+@@ -551,6 +555,11 @@ const NF_PageCamera = (() => {
+             <div class="result-card__serving">
+               <i class="fa-solid fa-bowl-food"></i> Khẩu phần AI ước tính: ${NF_UI.escapeHtml(data.serving)}
+             </div>
++            ${data.specialty ? `
++              <div class="tag tag--primary" style="margin-top:0.375rem; display:inline-flex; align-items:center; gap:0.25rem;">
++                <i class="fa-solid fa-map-location-dot"></i> Đặc sản ${NF_UI.escapeHtml(data.specialty)}
++              </div>
++            ` : ''}
+           </div>
+           <div style="text-align:right;">
+             <div class="result-card__calories">${scaled.calories}</div>
+diff --git a/js/pages/lookup.js b/js/pages/lookup.js
+index 73cbfbd..39074b9 100644
+--- a/js/pages/lookup.js
++++ b/js/pages/lookup.js
+@@ -166,6 +166,7 @@ const NF_PageLookup = (() => {
+       minerals: [],
+       foodGroup: hit.group,
+       tags: [...hit.tags],
++      specialty: hit.specialty || '',
+       advice: '',
+       source: 'lookup',
+       dataSource: 'db',
+@@ -224,6 +225,9 @@ const NF_PageLookup = (() => {
+           if (cached) data = applyComment(data, cached);
+         } else {
+           data = await NF_Gemini.searchFood(q);
++          // Tên AI trả về có thể khớp đúng một món trong CSDL (vd người dùng gõ tắt/viết khác) → lấy thêm đặc sản
++          const dbHit2 = NF_Foods.find(data.name);
++          data.specialty = dbHit2 ? (dbHit2.specialty || '') : '';
+         }
+         if (myToken !== token) return;
+ 
+@@ -359,6 +363,11 @@ const NF_PageLookup = (() => {
+             <div class="result-card__serving">
+               <i class="fa-solid fa-bowl-food"></i> Khẩu phần chuẩn: ${esc(data.serving)}
+             </div>
++            ${data.specialty ? `
++              <div class="tag tag--primary" style="margin-top:0.375rem; display:inline-flex; align-items:center; gap:0.25rem;">
++                <i class="fa-solid fa-map-location-dot"></i> Đặc sản ${esc(data.specialty)}
++              </div>
++            ` : ''}
+           </div>
+           <div style="text-align:right;">
+             <div class="result-card__calories">${n(scaled.calories)}</div>
+diff --git a/tests/foods.test.js b/tests/foods.test.js
+index 0194129..5caac91 100644
+--- a/tests/foods.test.js
++++ b/tests/foods.test.js
+@@ -3,12 +3,18 @@ const assert = require('node:assert');
+ const { load } = require('./load');
+ const { NF_Foods, NF_FOODS_DATA } = load(['js/data/foods.js', 'js/foods.js'], ['NF_Foods', 'NF_FOODS_DATA']);
+ 
+-test('CSDL có 68 món, không trùng khóa sau chuẩn hóa', () => {
+-  assert.strictEqual(NF_FOODS_DATA.length, 68);
++test('CSDL có 304 món, không trùng khóa sau chuẩn hóa', () => {
++  assert.strictEqual(NF_FOODS_DATA.length, 304);
+   const keys = NF_FOODS_DATA.map((f) => NF_Foods.normalize(f.name));
+   assert.strictEqual(new Set(keys).size, keys.length);
+ });
+ 
++test('món đặc sản vùng miền có trường specialty theo ĐVHC mới; món phổ quát để trống', () => {
++  assert.strictEqual(NF_Foods.find('Bún bò Huế')?.specialty, 'Huế');
++  assert.strictEqual(NF_Foods.find('Bánh canh Trảng Bàng')?.specialty, 'Tây Ninh');
++  assert.strictEqual(NF_Foods.find('Phở gà')?.specialty, '');
++});
++
+ test('khớp đúng tên, bất kể hoa/thường, khoảng trắng, dấu', () => {
+   for (const q of ['Cơm trắng', 'cơm trắng', '  CƠM   TRẮNG ', 'com trang', 'Cơm trắng\u200b'.replace('\u200b', '')]) {
+     assert.strictEqual(NF_Foods.find(q)?.name, 'Cơm trắng', q);
+@@ -18,7 +24,7 @@ test('khớp đúng tên, bất kể hoa/thường, khoảng trắng, dấu', ()
+ });
+ 
+ test('không khớp một phần / gần đúng → null (đi theo AI)', () => {
+-  for (const q of ['Phở bò tái', 'Cơm', 'phở', 'Trà sữa trân châu', 'Cơm trắng nhiều', 'Bún', '', '   ', null, undefined]) {
++  for (const q of ['Phở bò tái sốt vang', 'Cơm', 'phở', 'Trà sữa trân châu', 'Cơm trắng nhiều', 'Bún', '', '   ', null, undefined]) {
+     assert.strictEqual(NF_Foods.find(q), null, String(q));
+   }
+ });
+diff --git a/tools/build-foods.py b/tools/build-foods.py
+index 0f99873..b029edf 100644
+--- a/tools/build-foods.py
++++ b/tools/build-foods.py
+@@ -1,7 +1,12 @@
+ #!/usr/bin/env python3
+-"""Sinh js/data/foods.js từ bảng "GIÁ TRỊ DINH DƯỠNG THỰC PHẨM" trong plan.docx.
++"""[CŨ — không còn là nguồn sinh js/data/foods.js hiện tại, giữ lại để tham khảo lịch sử]
++Sinh js/data/foods.js từ bảng "GIÁ TRỊ DINH DƯỠNG THỰC PHẨM" trong plan.docx.
+ Chạy:  python3 tools/build-foods.py plan.txt > js/data/foods.js
+-(plan.txt = pandoc plan.docx -t plain --wrap=none)"""
++(plan.txt = pandoc plan.docx -t plain --wrap=none)
++
++CSDL hiện tại (304 món, có trường "specialty" = đặc sản tỉnh/thành theo 34 ĐVHC mới 2025)
++được sinh bằng tools/build-foods-v2.py từ tools/food-specialty-table.tsv — dùng script đó
++khi cần thêm/sửa món."""
+ import re, sys, json, unicodedata
+ 
+ GROUPS = {

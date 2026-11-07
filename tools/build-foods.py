@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
-"""Sinh js/data/foods.js từ bảng "GIÁ TRỊ DINH DƯỠNG THỰC PHẨM" trong plan.docx.
+"""[CŨ — không còn là nguồn sinh js/data/foods.js hiện tại, giữ lại để tham khảo lịch sử]
+Sinh js/data/foods.js từ bảng "GIÁ TRỊ DINH DƯỠNG THỰC PHẨM" trong plan.docx.
 Chạy:  python3 tools/build-foods.py plan.txt > js/data/foods.js
-(plan.txt = pandoc plan.docx -t plain --wrap=none)"""
+(plan.txt = pandoc plan.docx -t plain --wrap=none)
+
+CSDL hiện tại (304 món, có trường "specialty" = đặc sản tỉnh/thành theo 34 ĐVHC mới 2025)
+được sinh bằng tools/build-foods-v2.py từ tools/food-specialty-table.tsv — dùng script đó
+khi cần thêm/sửa món."""
 import re, sys, json, unicodedata
 
 GROUPS = {
